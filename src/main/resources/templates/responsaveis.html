@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Responsaveis</title>
+</head>
+<body>
+
+<h2>Cadastrar Responsável</h2>
+
+<div th:if="${erro}" style="color:red;">
+    <p th:text="${erro}"></p>
+</div>
+
+<form th:action="@{/responsaveis}" th:object="${responsavel}" method="post">
+    Nome: <input type="text" th:field="*{nome}" /><br/>
+    Endereço: <input type="text" th:field="*{endereco}" /><br/>
+    Telefone: <input type="text" th:field="*{telefone}" /><br/>
+    CPF: <input type="text" th:field="*{cpf}" /><br/>
+    <button type="submit">Salvar</button>
+</form>
+
+<hr>
+
+<h3>Lista de Responsáveis</h3>
+
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>CPF</th>
+    </tr>
+    <tr th:each="r : ${responsaveis}">
+        <td th:text="${r.nome}"></td>
+        <td th:text="${r.cpf}"></td>
+    </tr>
+</table>
+
+<a href="/alunos">Voltar</a>
+
+</body>
+</html>
