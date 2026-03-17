@@ -1,40 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Responsaveis</title>
+    <title>Responsáveis</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 800px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        h2, h3 {
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1e7e34;
+        }
+
+        .erro {
+            background-color: #ffe5e5;
+            color: #cc0000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .link a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Cadastrar Responsável</h2>
+<div class="container">
 
-<div th:if="${erro}" style="color:red;">
-    <p th:text="${erro}"></p>
+    <h2>Cadastrar Responsável</h2>
+
+    <div th:if="${erro}" class="erro">
+        <p th:text="${erro}"></p>
+    </div>
+
+    <form th:action="@{/responsaveis}" th:object="${responsavel}" method="post">
+
+        <label>Nome:</label>
+        <input type="text" th:field="*{nome}" required />
+
+        <label>Endereço:</label>
+        <input type="text" th:field="*{endereco}" />
+
+        <label>Telefone:</label>
+        <input type="text" th:field="*{telefone}" />
+
+        <label>CPF:</label>
+        <input type="text" th:field="*{cpf}" required />
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <hr>
+
+    <h3>Lista de Responsáveis</h3>
+
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+        </tr>
+
+        <tr th:each="r : ${responsaveis}">
+            <td th:text="${r.nome}"></td>
+            <td th:text="${r.cpf}"></td>
+        </tr>
+    </table>
+
+    <div class="link">
+        <a href="/alunos">← Voltar para Alunos</a>
+    </div>
+
 </div>
-
-<form th:action="@{/responsaveis}" th:object="${responsavel}" method="post">
-    Nome: <input type="text" th:field="*{nome}" /><br/>
-    Endereço: <input type="text" th:field="*{endereco}" /><br/>
-    Telefone: <input type="text" th:field="*{telefone}" /><br/>
-    CPF: <input type="text" th:field="*{cpf}" /><br/>
-    <button type="submit">Salvar</button>
-</form>
-
-<hr>
-
-<h3>Lista de Responsáveis</h3>
-
-<table>
-    <tr>
-        <th>Nome</th>
-        <th>CPF</th>
-    </tr>
-    <tr th:each="r : ${responsaveis}">
-        <td th:text="${r.nome}"></td>
-        <td th:text="${r.cpf}"></td>
-    </tr>
-</table>
-
-<a href="/alunos">Voltar</a>
 
 </body>
 </html>
