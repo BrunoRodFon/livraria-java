@@ -2,6 +2,7 @@ package com.livraria.controller;
 
 import com.livraria.model.Autor;
 import com.livraria.repository.AutorRepository;
+import com.livraria.service.impl.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,18 +12,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/autores")
 public class AutorController {
 
+    private final AutorService service;
+
     @Autowired
     private AutorRepository autorRepo;
 
+    public AutorController(AutorService service) {
+        this.service = service;
+    }
+
     @GetMapping("/form")
     public String form(Model model){
-        model.addAttribute("autor", new Autor());
-        return "autores/form";
+        return service.form(model);
     }
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Autor autor){
-        autorRepo.save(autor);
-        return "redirect:/livros/form";
+        return service.salvar(autor);
     }
 }

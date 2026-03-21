@@ -5,6 +5,7 @@ import com.livraria.model.Livro;
 import com.livraria.repository.LivroExemplarRepository;
 import com.livraria.repository.LivroRepository;
 
+import com.livraria.service.impl.ExemplarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,36 +17,25 @@ import java.util.List;
 @RequestMapping("/exemplares")
 public class ExemplarController {
 
-    @Autowired
-    private LivroExemplarRepository exemplarRepo;
+    private final ExemplarService service;
 
-    @Autowired
-    private LivroRepository livroRepo;
+    public ExemplarController(ExemplarService service) {
+        this.service = service;
+    }
 
     @GetMapping("/form")
     public String form(Model model) {
-        model.addAttribute("exemplar", new LivroExemplar());
-        model.addAttribute("livros", livroRepo.findAll());
-        return "exemplares/form";
+        return service.form(model);
+
     }
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute LivroExemplar exemplar, Model model) {
-        if (exemplarRepo.findByCod(exemplar.getCod()).isPresent()) {
-            model.addAttribute("erro", "Já existe um exemplar com esse código!");
-            model.addAttribute("livros", livroRepo.findAll());
-            model.addAttribute("exemplar", exemplar); // importante! mantém os dados preenchidos
-            return "exemplares/form";
-        }
-
-        exemplarRepo.save(exemplar);
-        return "redirect:/exemplares/lista";
+        return service.salvar(exemplar, model);
     }
 
     @GetMapping("/lista")
     public String listar(Model model) {
-        List<LivroExemplar> exemplares = exemplarRepo.findAll();
-        model.addAttribute("exemplares", exemplares);
-        return "exemplares/lista";
+        return service.listar(model);
     }
 }

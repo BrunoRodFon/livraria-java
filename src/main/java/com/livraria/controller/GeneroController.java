@@ -2,6 +2,7 @@ package com.livraria.controller;
 
 import com.livraria.model.Genero;
 import com.livraria.repository.GeneroRepository;
+import com.livraria.service.impl.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,18 +12,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/generos")
 public class GeneroController {
 
-    @Autowired
-    private GeneroRepository generoRepo;
+    private final GeneroService service;
+
+    public GeneroController(GeneroService service) {
+        this.service = service;
+    }
 
     @GetMapping("/form")
     public String form(Model model){
-        model.addAttribute("genero", new Genero());
-        return "generos/form";
+        return service.form(model);
     }
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Genero genero){
-        generoRepo.save(genero);
-        return "redirect:/livros/form";
+        return service.salvar(genero);
     }
 }

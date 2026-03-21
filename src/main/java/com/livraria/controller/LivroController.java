@@ -7,6 +7,7 @@ import com.livraria.repository.LivroRepository;
 import com.livraria.repository.AutorRepository;
 import com.livraria.repository.GeneroRepository;
 
+import com.livraria.service.impl.LivroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,44 +19,24 @@ import java.util.List;
 @RequestMapping("/livros")
 public class LivroController {
 
-    @Autowired
-    private LivroRepository livroRepo;
+    private final LivroService service;
 
-    @Autowired
-    private AutorRepository autorRepo;
-
-    @Autowired
-    private GeneroRepository generoRepo;
+    public LivroController(LivroService service) {
+        this.service = service;
+    }
 
     @GetMapping("/form")
     public String form(Model model) {
-        model.addAttribute("livro", new Livro());
-        model.addAttribute("autores", autorRepo.findAll());
-        model.addAttribute("generos", generoRepo.findAll());
-        return "livros/form";
+        return service.form(model);
     }
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Livro livro) {
-
-        // Busca os objetos reais no banco
-        if (livro.getAutor() != null && livro.getAutor().getId() != null) {
-            Autor autor = autorRepo.findById(livro.getAutor().getId()).orElse(null);
-            livro.setAutor(autor);
-        }
-
-        if (livro.getGenero() != null && livro.getGenero().getId() != null) {
-            Genero genero = generoRepo.findById(livro.getGenero().getId()).orElse(null);
-            livro.setGenero(genero);
-        }
-
-        livroRepo.save(livro);
-        return "redirect:/livros/lista";
+        return service.salvar(livro);
     }
 
     @GetMapping("/lista")
     public String listar(Model model) {
-        model.addAttribute("livros", livroRepo.findAll());
-        return "livros/lista";
+        return service.listar(model);
     }
 }
