@@ -2,11 +2,15 @@ package com.livraria.service.impl;
 
 import com.livraria.model.Aluno;
 import com.livraria.repository.AlunoRepository;
+import com.livraria.repository.EmprestimoRepository;
 import com.livraria.repository.ResponsavelRepository;
 import com.livraria.service.IAlunoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+
+import java.util.List;
 
 @Service
 public class AlunoService implements IAlunoService {
@@ -45,5 +49,25 @@ public class AlunoService implements IAlunoService {
             return "alunos";
         }
     }
+
+    @Autowired
+    private EmprestimoRepository emprestimoRepository;
+
+    public void deletarAluno(Long alunoId) {
+
+        int ativos = emprestimoRepository.countByAlunoIdAndAtivoTrue(alunoId);
+
+        if (ativos > 0) {
+            throw new RuntimeException("Aluno possui empréstimos ativos");
+        }
+
+        alunoRepository.deleteById(alunoId);
+    }
+
+    @Override
+    public List<Aluno> listarTodos() {
+        return alunoRepository.findAll();
+    }
+
 
 }

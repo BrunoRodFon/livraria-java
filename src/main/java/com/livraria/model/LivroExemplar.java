@@ -27,6 +27,8 @@ public class LivroExemplar {
     @JoinColumn(name = "idLivro")
     private Livro livro;
 
+    private Boolean disponivel = true;
+
     public enum Status {
         Disponivel, Emprestado
     }
@@ -43,4 +45,13 @@ public class LivroExemplar {
 
     public Livro getLivro() { return livro; }
     public void setLivro(Livro livro) { this.livro = livro; }
+
+    public Boolean getDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(Boolean disponivel) {
+        this.disponivel = disponivel;
+    }
+
 }
