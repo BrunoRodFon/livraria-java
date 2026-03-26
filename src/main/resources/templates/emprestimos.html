@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Empréstimos</title>
+  <!-- mesmo CSS do alunos.html -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 800px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    form {
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .erro {
+      background-color: #ffe5e5;
+      color: #cc0000;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    .link {
+      margin-bottom: 15px;
+    }
+
+    .link a {
+      text-decoration: none;
+      color: #007BFF;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px;
+    }
+
+    table td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table tr:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Cadastro de Empréstimos</h1>
+
+  <!-- Botão Voltar -->
+  <div class="link">
+    <a class="btn-voltar" th:href="@{/}">Home</a>
+  </div>
+
+  <!-- Mensagem de erro -->
+  <div th:if="${erro}" class="erro">
+    <p th:text="${erro}"></p>
+  </div>
+
+  <!-- Formulário de cadastro -->
+  <form th:action="@{/emprestimos}" method="post">
+
+    <label>Aluno:</label>
+    <select name="alunoId" required>
+      <option value="">Selecione</option>
+      <option th:each="aluno : ${alunos}"
+              th:value="${aluno.id}"
+              th:text="${aluno.nome}">
+      </option>
+    </select>
+
+    <label>Exemplar:</label>
+    <select name="exemplarId" required>
+      <option value="">Selecione</option>
+      <option th:each="ex : ${exemplares}"
+              th:value="${ex.id}"
+              th:text="${ex.livro.titulo}">
+      </option>
+    </select>
+
+    <button type="submit">Salvar</button>
+  </form>
+
+  <hr/>
+
+  <!-- Lista de empréstimos -->
+  <h2>Lista de Empréstimos</h2>
+
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Aluno</th>
+      <th>Livro</th>
+      <th>Data Empréstimo</th>
+      <th>Data Prevista</th>
+      <th>Data Devolução</th>
+      <th>Ativo</th>
+    </tr>
+    <tr th:each="emp : ${emprestimos}">
+      <td th:text="${emp.id}"></td>
+      <td th:text="${emp.aluno.nome}"></td>
+      <td th:text="${emp.livroExemplar.livro.titulo}"></td>
+      <td th:text="${emp.dtEmprestimo}"></td>
+      <td th:text="${emp.dtPrevista}"></td>
+      <td th:text="${emp.dtDevolucao}"></td>
+      <td th:text="${emp.ativo ? 'Sim' : 'Não'}"></td>
+    </tr>
+  </table>
+
+</div>
+
+</body>
+</html>

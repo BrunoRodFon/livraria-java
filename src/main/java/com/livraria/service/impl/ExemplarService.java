@@ -4,6 +4,7 @@ import com.livraria.model.LivroExemplar;
 import com.livraria.repository.LivroExemplarRepository;
 import com.livraria.repository.LivroRepository;
 import com.livraria.service.IExemplarService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -46,5 +47,13 @@ public class ExemplarService implements IExemplarService {
         List<LivroExemplar> exemplares = exemplarRepo.findAll();
         model.addAttribute("exemplares", exemplares);
         return "exemplares/lista";
+    }
+
+    @Autowired
+    private LivroExemplarRepository exemplarRepository;
+
+    @Override
+    public List<LivroExemplar> listarTodosDisponiveis() {
+        return exemplarRepository.findByDisponivelTrue();
     }
 }
