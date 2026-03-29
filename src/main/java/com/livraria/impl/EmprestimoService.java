@@ -1,8 +1,8 @@
-package com.livraria.service.impl;
+package com.livraria.impl;
 
 import com.livraria.model.*;
 import com.livraria.repository.*;
-import com.livraria.service.IEmprestimoService;
+import com.livraria.IEmprestimoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +22,12 @@ public class EmprestimoService implements IEmprestimoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
+    @Autowired
+    private MultaRepository multaRepository;
+
+    @Autowired
+    private MultaService multaService;
+
     // 📌 REALIZAR EMPRÉSTIMO
     @Override
     public Emprestimo realizarEmprestimo(Long alunoId, Long exemplarId) {
@@ -29,21 +35,27 @@ public class EmprestimoService implements IEmprestimoService {
         Aluno aluno = alunoRepository.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
+        boolean possuiDivida = multaRepository.existsByEmprestimoAlunoAndStatus(
+                aluno,
+                Multa.Status.PENDENTE
+        );
+
+        if (possuiDivida) {
+            throw new RuntimeException("Aluno possui multa pendente!");
+        }
+
         LivroExemplar exemplar = exemplarRepository.findById(exemplarId)
                 .orElseThrow(() -> new RuntimeException("Exemplar não encontrado"));
 
-        // ✔ REGRA 1: Livro disponível
-        if (!exemplar.getDisponivel()) {
+        if (!exemplar.isDisponivel()) {
             throw new RuntimeException("Livro não está disponível");
         }
 
-        // ✔ REGRA 2: Máximo 3 livros
         int ativos = emprestimoRepository.countByAlunoIdAndAtivoTrue(alunoId);
         if (ativos >= 3) {
             throw new RuntimeException("Aluno já possui 3 livros emprestados");
         }
 
-        // ✔ REGRA 3: Prazo de 30 dias
         Emprestimo emp = new Emprestimo();
         emp.setAluno(aluno);
         emp.setLivroExemplar(exemplar);
@@ -53,11 +65,15 @@ public class EmprestimoService implements IEmprestimoService {
         emp.setDtPrevista(hoje.plusDays(30));
         emp.setAtivo(true);
 
-        // Atualiza disponibilidade
-        exemplar.setDisponivel(false);
+        // 🔥 CORREÇÃO CRÍTICA
+        // SALVA PRIMEIRO O EMPRÉSTIMO NO BANCO
+        emp = emprestimoRepository.save(emp);
+
+        // 🔥 ATUALIZA O EXEMPLAR
+        exemplar.setStatus(LivroExemplar.Status.EMPRESTADO);
         exemplarRepository.save(exemplar);
 
-        return emprestimoRepository.save(emp);
+        return emp;
     }
 
     // 📌 DEVOLUÇÃO
@@ -67,13 +83,26 @@ public class EmprestimoService implements IEmprestimoService {
         Emprestimo emp = emprestimoRepository.findById(emprestimoId)
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
 
+        LivroExemplar exemplar = emp.getLivroExemplar(); // 🔥 FALTAVA ISSO
+
+        // 🔥 LIBERA EXEMPLAR
+        exemplar.setStatus(LivroExemplar.Status.DISPONIVEL);
+        exemplarRepository.save(exemplar);
+
         emp.setDtDevolucao(LocalDate.now());
         emp.setAtivo(false);
 
-        LivroExemplar exemplar = emp.getLivroExemplar();
-        exemplar.setDisponivel(true);
+        if (emp.getDtDevolucao().isAfter(emp.getDtPrevista())) {
 
-        exemplarRepository.save(exemplar);
+            long diasAtraso = ChronoUnit.DAYS.between(
+                    emp.getDtPrevista(),
+                    emp.getDtDevolucao()
+            );
+
+            // 🔥 AGORA FUNCIONA
+            multaService.gerarMultaAtraso(emp, diasAtraso);
+        }
+
         emprestimoRepository.save(emp);
     }
 
@@ -95,12 +124,11 @@ public class EmprestimoService implements IEmprestimoService {
                 LocalDate.now()
         );
 
-        return dias * 2.0; // R$2 por dia
+        return dias * 2.0;
     }
 
     @Override
     public List<Emprestimo> listarTodos() {
         return emprestimoRepository.findAll();
     }
-
 }

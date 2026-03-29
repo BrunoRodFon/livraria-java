@@ -1,7 +1,7 @@
 package com.livraria.controller;
 
 import com.livraria.model.Aluno;
-import com.livraria.service.impl.AlunoService;
+import com.livraria.impl.AlunoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

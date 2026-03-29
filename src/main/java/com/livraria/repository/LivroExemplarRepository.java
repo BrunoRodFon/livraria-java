@@ -11,5 +11,5 @@ public interface LivroExemplarRepository extends JpaRepository<LivroExemplar, Lo
     // Agora recebe Integer em vez de String
     Optional<LivroExemplar> findByCod(Integer cod);
 
-    List<LivroExemplar> findByDisponivelTrue();
+    List<LivroExemplar> findByStatus(LivroExemplar.Status status);
 }

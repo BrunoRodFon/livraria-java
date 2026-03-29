@@ -1,8 +1,8 @@
-package com.livraria.service.impl;
+package com.livraria.impl;
 
 import com.livraria.model.Autor;
 import com.livraria.repository.AutorRepository;
-import com.livraria.service.IAutorService;
+import com.livraria.IAutorService;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 

@@ -1,10 +1,10 @@
-package com.livraria.service.impl;
+package com.livraria.impl;
 
 import com.livraria.model.Aluno;
 import com.livraria.repository.AlunoRepository;
 import com.livraria.repository.EmprestimoRepository;
 import com.livraria.repository.ResponsavelRepository;
-import com.livraria.service.IAlunoService;
+import com.livraria.IAlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

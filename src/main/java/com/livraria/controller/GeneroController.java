@@ -1,9 +1,7 @@
 package com.livraria.controller;
 
 import com.livraria.model.Genero;
-import com.livraria.repository.GeneroRepository;
-import com.livraria.service.impl.GeneroService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.livraria.impl.GeneroService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
