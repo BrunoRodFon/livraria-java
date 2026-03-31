@@ -1,8 +1,8 @@
-package com.livraria.service.impl;
+package com.livraria.impl;
 
 import com.livraria.model.Responsavel;
 import com.livraria.repository.ResponsavelRepository;
-import com.livraria.service.IResponsavelService;
+import com.livraria.IResponsavelService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;

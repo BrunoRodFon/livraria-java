@@ -27,13 +27,33 @@ public class LivroExemplar {
     @JoinColumn(name = "idLivro")
     private Livro livro;
 
-    private Boolean disponivel = true;
+    // ❌ REMOVIDO -> campo redundante
+    // private Boolean disponivel;
 
+
+    //Criar um Enum com label customizado
     public enum Status {
-        Disponivel, Emprestado
+        DISPONIVEL("Disponível"),
+        EMPRESTADO("Emprestado");
+
+        private String descricao;
+
+        Status(String descricao) {
+            this.descricao = descricao;
+        }
+
+        public String getDescricao() {
+            return descricao;
+        }
+    }
+
+    /* ✔ METODO AUXILIAR (PROFISSIONAL)*/
+    public boolean isDisponivel() {
+        return this.status == Status.DISPONIVEL;
     }
 
     // Getters e Setters
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
@@ -45,13 +65,4 @@ public class LivroExemplar {
 
     public Livro getLivro() { return livro; }
     public void setLivro(Livro livro) { this.livro = livro; }
-
-    public Boolean getDisponivel() {
-        return disponivel;
-    }
-
-    public void setDisponivel(Boolean disponivel) {
-        this.disponivel = disponivel;
-    }
-
 }

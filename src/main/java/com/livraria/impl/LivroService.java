@@ -1,4 +1,4 @@
-package com.livraria.service.impl;
+package com.livraria.impl;
 
 import com.livraria.model.Autor;
 import com.livraria.model.Genero;
@@ -6,7 +6,7 @@ import com.livraria.model.Livro;
 import com.livraria.repository.AutorRepository;
 import com.livraria.repository.GeneroRepository;
 import com.livraria.repository.LivroRepository;
-import com.livraria.service.ILivroService;
+import com.livraria.ILivroService;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 

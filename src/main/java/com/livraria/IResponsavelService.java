@@ -1,4 +1,4 @@
-package com.livraria.service;
+package com.livraria;
 
 import com.livraria.model.Responsavel;
 import org.springframework.ui.Model;

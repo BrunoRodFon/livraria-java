@@ -1,4 +1,4 @@
-package com.livraria.service;
+package com.livraria;
 
 import com.livraria.model.Aluno;
 import org.springframework.ui.Model;

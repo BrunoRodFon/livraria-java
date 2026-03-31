@@ -1,17 +1,11 @@
 package com.livraria.controller;
 
 import com.livraria.model.LivroExemplar;
-import com.livraria.model.Livro;
-import com.livraria.repository.LivroExemplarRepository;
-import com.livraria.repository.LivroRepository;
 
-import com.livraria.service.impl.ExemplarService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.livraria.impl.ExemplarService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/exemplares")

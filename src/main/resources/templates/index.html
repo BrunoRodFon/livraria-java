@@ -12,7 +12,7 @@
         }
 
         .container {
-            width: 900px;
+            width: 1000px; /* 🔥 ALTERADO: mais largura para melhor layout */
             margin: 60px auto;
             text-align: center;
         }
@@ -24,25 +24,28 @@
         .menu {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 25px; /* 🔥 ALTERADO: mais espaçamento */
         }
 
         .card {
-            padding: 30px;
-            border-radius: 10px;
+            padding: 40px; /* 🔥 ALTERADO: maior área clicável */
+            border-radius: 12px;
             color: white;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 20px; /* 🔥 ALTERADO */
             font-weight: bold;
-            display: block;
+            display: flex; /* 🔥 ALTERADO */
+            align-items: center; /* 🔥 ALTERADO */
+            justify-content: center; /* 🔥 ALTERADO */
             transition: 0.3s;
         }
 
         .card:hover {
-            transform: scale(1.03);
-            opacity: 0.9;
+            transform: scale(1.05); /* 🔥 ALTERADO */
+            opacity: 0.95;
         }
 
+        /* CORES PADRÃO DO SISTEMA */
         .alunos {
             background-color: #007BFF;
         }
@@ -52,53 +55,52 @@
         }
 
         .livros {
-            background-color: #8B4513; /* marrom */
-            cursor: pointer;
+            background-color: #8B4513;
+        }
+
+        .emprestimos {
+            background-color: #6f42c1; /* 🔥 NOVO: roxo padrão empréstimos */
         }
 
         .multas {
-            background-color: #6c757d;
-            cursor: not-allowed;
-            opacity: 0.6;
+            background-color: #ffc107; /* 🔥 ALTERADO: amarelo (melhor que cinza) */
+            color: #000; /* 🔥 ALTERADO: contraste */
         }
 
-        .disabled {
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
 
-    <h1>Sistema de Livraria</h1>
+    <h1>📚 Sistema de Livraria</h1> <!-- 🔥 ALTERADO: título com emoji -->
 
     <div class="menu">
 
-        <!-- Alunos -->
+        <!-- 🔥 PADRÃO CORRETO: card inteiro é clicável -->
         <a href="/alunos" class="card alunos">
             📚 Alunos
         </a>
 
-        <!-- Responsáveis -->
         <a href="/responsaveis" class="card responsaveis">
             👨‍👩‍👧 Responsáveis
         </a>
 
-        <!-- Livros (habilitado) -->
         <a href="/exemplares/lista" class="card livros">
             📖 Livros
         </a>
-        <!-- Emprestimos (habilitado) -->
-        <div class="card emprestimos">
-            <a href="/emprestimos">📕 Empréstimos</a>
-        </div>
 
-        <!-- Multas (habilitado) -->
-        <div class="card multas ">
-            <a href="/multas">💰 Multas</a>
-        </div>
+        <!-- 🔥 CORREÇÃO IMPORTANTE -->
+        <!-- Antes: <div> com <a> dentro ❌ -->
+        <!-- Agora: <a> direto como card ✔ -->
+        <a href="/emprestimos" class="card emprestimos">
+            📕 Empréstimos
+        </a>
 
+        <!-- 🔥 CORREÇÃO IMPORTANTE -->
+        <a href="/multas" class="card multas">
+            💰 Multas
+        </a>
 
     </div>
 

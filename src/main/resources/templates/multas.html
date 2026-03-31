@@ -7,17 +7,15 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
         }
 
         .container {
-            width: 800px;
+            width: 900px; /* 🔥 PADRÃO aplicado igual outras telas */
             margin: 40px auto;
             background: #ffffff;
             padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
         }
 
         h1, h2 {
@@ -34,25 +32,24 @@
 
         input, select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin: 5px 0 15px 0;
-            border-radius: 5px;
+            border-radius: 6px;
             border: 1px solid #ccc;
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
+            padding: 12px;
+            background-color: #6f42c1; /* 🔥 cor padrão multas */
             color: white;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            border-radius: 6px;
             font-weight: bold;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #5a32a3;
         }
 
         .erro {
@@ -60,20 +57,14 @@
             color: #cc0000;
             padding: 10px;
             border-radius: 5px;
-            margin-bottom: 15px;
         }
 
-        .link {
+        .btn-voltar {
+            display: inline-block;
             margin-bottom: 15px;
-        }
-
-        .link a {
+            color: #6f42c1;
             text-decoration: none;
-            color: #007BFF;
-        }
-
-        .link a:hover {
-            text-decoration: underline;
+            font-weight: bold;
         }
 
         table {
@@ -82,7 +73,7 @@
         }
 
         table th {
-            background-color: #007BFF;
+            background-color: #6f42c1;
             color: white;
             padding: 10px;
         }
@@ -91,26 +82,28 @@
             padding: 10px;
             border-bottom: 1px solid #ddd;
         }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
     </style>
-
 </head>
 <body>
 
 <div class="container">
 
-    <h1>Cadastro de Multas</h1>
+    <h1>💰 Multas</h1>
 
-    <a th:href="@{/}">Home</a>
+    <a class="btn-voltar" th:href="@{/}">⬅ Voltar</a>
 
-    <!-- FORM -->
-    <form th:action="@{/multas}" th:object="${multa}" method="post">
+    <!-- 🔥 EXIBE ERRO DO BACKEND -->
+    <div th:if="${erro}" class="erro">
+        <p th:text="${erro}"></p>
+    </div>
 
+    <!-- 🔥 FORM CORRIGIDO -->
+    <form th:action="@{/multas}" method="post">
+
+        <!-- 🔥 CORREÇÃO IMPORTANTE -->
+        <!-- NÃO usar th:field="*{emprestimo.id}" porque o controller espera @RequestParam -->
         <label>Empréstimo:</label>
-        <select name="emprestimo.id">
+        <select name="emprestimoId" required>
             <option value="">Selecione</option>
             <option th:each="emp : ${emprestimos}"
                     th:value="${emp.id}"
@@ -118,12 +111,14 @@
             </option>
         </select>
 
+        <!-- 🔥 VALOR -->
         <label>Valor:</label>
-        <input type="number" step="0.01" th:field="*{valor}" required />
+        <input type="number" step="0.01" name="valor" required />
 
-        <label>Pago:</label>
-        <select th:field="*{status}">
-            <option value="">Selecione</option>
+        <!-- 🔥 ENUM STATUS (PADRÃO JAVA) -->
+        <label>Status:</label>
+        <select name="status">
+            <!-- 🔥 IMPORTANTE: valores devem bater com o ENUM -->
             <option value="PAGO">Pago</option>
             <option value="PENDENTE">Pendente</option>
         </select>
@@ -133,16 +128,15 @@
 
     <hr/>
 
-    <!-- LISTA -->
     <h2>Lista de Multas</h2>
 
-    <table border="1">
+    <table>
         <tr>
             <th>ID</th>
             <th>Aluno</th>
             <th>Livro</th>
             <th>Valor</th>
-            <th>Pago</th>
+            <th>Status</th>
         </tr>
 
         <tr th:each="m : ${multas}">
@@ -150,7 +144,20 @@
             <td th:text="${m.emprestimo.aluno.nome}"></td>
             <td th:text="${m.emprestimo.livroExemplar.livro.titulo}"></td>
             <td th:text="${m.valor}"></td>
-            <td th:text="${m.pago ? 'Sim' : 'Não'}"></td>
+
+            <!-- 🔥 CORREÇÃO PROFISSIONAL -->
+            <!-- comparar ENUM corretamente -->
+            <td>
+                <span th:if="${m.status.name() == 'PAGO'}"
+                      style="color: green; font-weight: bold;">
+                    Pago
+                </span>
+
+                <span th:if="${m.status.name() == 'PENDENTE'}"
+                      style="color: red; font-weight: bold;">
+                    Pendente
+                </span>
+            </td>
         </tr>
     </table>
 
