@@ -2,155 +2,111 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Empréstimos</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f8;
-    }
-
-    .container {
-      width: 900px; /* 🔥 PADRÃO */
-      margin: 40px auto;
-      background: #ffffff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
-    }
-
-    h1, h2 {
-      text-align: center;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0 15px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #8B4513; /* 🔥 cor dos livros */
-      color: white;
-      border-radius: 6px;
-      border: none;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background-color: #6f3610;
-    }
-
-    .btn-voltar {
-      display: inline-block;
-      margin-bottom: 15px;
-      color: #8B4513;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    table th {
-      background-color: #8B4513;
-      color: white;
-      padding: 10px;
-    }
-
-    table td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 
-<div class="container">
+<div class="layout">
 
-  <h1>📕 Empréstimos</h1>
+  <!-- BOTÃO MENU -->
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  <div id="overlay" onclick="toggleMenu()"></div>
 
-  <a class="btn-voltar" th:href="@{/}">⬅ Voltar</a>
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <img src="images/logo.png" class="logo">
+    <a href="/" class="menu-item">🏠 <span class="menu-text">Início</span></a>
+    <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
+    <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
+    <a href="/livros/lista" class="menu-item">📖 <span class="menu-text">Livros</span></a>
+    <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
+    <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
+  </div>
 
-  <!-- FORM -->
-  <form th:action="@{/emprestimos}" method="post">
+  <!-- CONTEÚDO -->
+  <div class="content" id="content">
+    <div class="content-inner">
 
-    <label>Aluno:</label>
-    <select name="alunoId" required>
-      <option value="">Selecione</option>
-      <option th:each="aluno : ${alunos}"
-              th:value="${aluno.id}"
-              th:text="${aluno.nome}">
-      </option>
-    </select>
+      <h1>📕 Empréstimos</h1>
 
-    <label>Exemplar:</label>
-    <select name="exemplarId" required>
-      <option value="">Selecione</option>
-      <option th:each="ex : ${exemplares}"
-              th:value="${ex.id}"
-              th:text="${ex.livro.titulo}">
-      </option>
-    </select>
+      <!-- FORM -->
+      <form th:action="@{/emprestimos}" method="post">
 
-    <button type="submit">Salvar</button>
-  </form>
+        <label>Aluno:</label>
+        <select name="alunoId" required>
+          <option value="">Selecione</option>
+          <option th:each="aluno : ${alunos}"
+                  th:value="${aluno.id}"
+                  th:text="${aluno.nome}">
+          </option>
+        </select>
 
-  <hr/>
+        <label>Exemplar:</label>
+        <select name="exemplarId" required>
+          <option value="">Selecione</option>
+          <option th:each="ex : ${exemplares}"
+                  th:value="${ex.id}"
+                  th:text="${ex.livro.titulo}">
+          </option>
+        </select>
 
-  <h2>Lista de Empréstimos</h2>
+        <button type="submit">Salvar</button>
+      </form>
 
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Aluno</th>
-      <th>Livro</th>
-      <th>Empréstimo</th>
-      <th>Prevista</th>
-      <th>Devolução</th>
-      <th>Status</th>
-      <th>Ações</th>
-    </tr>
+      <hr/>
 
-    <tr th:each="emp : ${emprestimos}">
-      <td th:text="${emp.id}"></td>
-      <td th:text="${emp.aluno.nome}"></td>
-      <td th:text="${emp.livroExemplar.livro.titulo}"></td>
-      <td th:text="${emp.dtEmprestimo}"></td>
-      <td th:text="${emp.dtPrevista}"></td>
-      <td th:text="${emp.dtDevolucao}"></td>
+      <h2>Lista de Empréstimos</h2>
 
-      <!-- 🔥 STATUS COM COR -->
-      <td>
-        <span th:if="${emp.ativo}" style="color: green; font-weight: bold;">
-            Ativo
-        </span>
-        <span th:if="${!emp.ativo}" style="color: red; font-weight: bold;">
-            Finalizado
-        </span>
-      </td>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Aluno</th>
+          <th>Livro</th>
+          <th>Empréstimo</th>
+          <th>Prevista</th>
+          <th>Devolução</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
 
-      <!-- 🔥 BOTÃO DEVOLVER CORRIGIDO -->
-      <td>
-        <form th:action="@{'/emprestimos/devolver/' + ${emp.id}}" method="post">
-          <button type="submit"
-                  th:if="${emp.ativo}"
-                  style="background-color: #28a745;">
-            Devolver
-          </button>
-        </form>
-      </td>
+        <tr th:each="emp : ${emprestimos}">
+          <td th:text="${emp.id}"></td>
+          <td th:text="${emp.aluno.nome}"></td>
+          <td th:text="${emp.livroExemplar.livro.titulo}"></td>
+          <td th:text="${emp.dtEmprestimo}"></td>
+          <td th:text="${emp.dtPrevista}"></td>
+          <td th:text="${emp.dtDevolucao}"></td>
 
-    </tr>
-  </table>
+          <td>
+            <span th:if="${emp.ativo}" style="color: green; font-weight: bold;">Ativo</span>
+            <span th:if="${!emp.ativo}" style="color: red; font-weight: bold;">Finalizado</span>
+          </td>
+
+          <td>
+            <form th:action="@{'/emprestimos/devolver/' + ${emp.id}}" method="post">
+              <button type="submit" th:if="${emp.ativo}" style="background-color: #28a745;">
+                Devolver
+              </button>
+            </form>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
 
 </div>
+
+<script>
+  function toggleMenu() {
+      const sidebar = document.getElementById("sidebar");
+      const content = document.getElementById("content");
+
+      sidebar.classList.toggle("collapsed");
+      content.classList.toggle("collapsed");
+  }
+</script>
 
 </body>
 </html>
