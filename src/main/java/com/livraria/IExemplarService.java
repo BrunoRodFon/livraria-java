@@ -1,13 +1,19 @@
-package com.livraria.service;
+package com.livraria;
 
 import com.livraria.model.LivroExemplar;
 import org.springframework.ui.Model;
 
+import java.util.List;
+
 public interface IExemplarService {
 
-    String form (Model model);
+    String form(Model model);
 
     String salvar(LivroExemplar exemplar, Model model);
 
     String listar(Model model);
+
+    void deletar(Long id);
+
+    List<LivroExemplar> listarTodosDisponiveis();
 }

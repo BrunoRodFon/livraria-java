@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Empréstimos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+        <img src="/images/logo.png" class="logo">
+
+        <a th:href="@{/}" class="menu-item">🏠 <span class="menu-text">Início</span></a>
+        <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
+        <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
+        <a href="/livros/lista" class="menu-item">📚 <span class="menu-text">Livros</span></a>
+        <a href="/exemplares" class="menu-item">📖 <span class="menu-text">Exemplares</span></a>
+        <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
+        <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
+    </div>
+
+    <div class="content" id="content">
+        <div class="content-inner">
+
+            <h1>📕 Empréstimos</h1>
+
+            <form th:action="@{/emprestimos}" method="post">
+
+                <label>Aluno:</label>
+                <select name="alunoId" required>
+                    <option value="">Selecione</option>
+                    <option th:each="aluno : ${alunos}"
+                            th:value="${aluno.id}"
+                            th:text="${aluno.nome}">
+                    </option>
+                </select>
+
+                <label>Exemplar:</label>
+                <select name="exemplarId" required>
+                    <option value="">Selecione</option>
+                    <option th:each="ex : ${exemplares}"
+                            th:value="${ex.id}"
+                            th:text="${ex.livro.titulo}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">
+                    Salvar
+                </button>
+
+            </form>
+
+            <hr/>
+
+            <h2>Lista de Empréstimos</h2>
+
+            <table>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Aluno</th>
+                    <th>Livro</th>
+                    <th>Empréstimo</th>
+                    <th>Prevista</th>
+                    <th>Devolução</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+
+                <tr th:each="emp : ${emprestimos}">
+
+                    <td th:text="${emp.id}"></td>
+                    <td th:text="${emp.aluno.nome}"></td>
+                    <td th:text="${emp.livroExemplar.livro.titulo}"></td>
+                    <td th:text="${emp.dtEmprestimo}"></td>
+                    <td th:text="${emp.dtPrevista}"></td>
+                    <td th:text="${emp.dtDevolucao}"></td>
+
+                    <td>
+                        <span th:if="${emp.ativo}" style="color:green;">Ativo</span>
+                        <span th:if="${!emp.ativo}" style="color:red;">Finalizado</span>
+                    </td>
+
+                    <td>
+                        <div class="actions">
+
+                            <form th:action="@{'/emprestimos/devolver/' + ${emp.id}}" method="post">
+                                <button type="submit"
+                                        th:if="${emp.ativo}"
+                                        class="btn btn-success">
+                                    Devolver
+                                </button>
+                            </form>
+
+                            <form th:action="@{'/emprestimos/deletar/' + ${emp.id}}" method="post">
+                                <button type="submit"
+                                        class="btn btn-danger"
+                                        onclick="return confirm('Excluir empréstimo?')">
+                                    Excluir
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById("sidebar").classList.toggle("collapsed");
+        document.getElementById("content").classList.toggle("collapsed");
+    }
+</script>
+
+</body>
+</html>

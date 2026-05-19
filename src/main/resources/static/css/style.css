@@ -1,0 +1,197 @@
+/* RESET */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f8;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: linear-gradient(180deg, #1e3c72, #2a5298);
+    padding: 20px 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: 0.3s;
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: 50px;
+}
+
+/* LOGO */
+.logo {
+    width: 120px;
+    display: block;
+    margin: 0 auto 20px;
+    transition: 0.3s;
+}
+
+.sidebar.collapsed .logo {
+    width: 40px;
+}
+
+/* MENU */
+.menu-item {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.menu-item:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.menu-text {
+    margin-left: 10px;
+}
+
+.sidebar.collapsed .menu-text {
+    display: none;
+}
+
+/* BOTÃO MENU */
+.menu-toggle {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    font-size: 22px;
+    background: #1e3c72;
+    color: white;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* CONTEÚDO */
+.content {
+    margin-left: 220px;
+    padding: 40px;
+    transition: 0.3s;
+    background: linear-gradient(135deg, #ffeaa7, #f5d76e);
+    min-height: 100vh;
+}
+
+.content.collapsed {
+    margin-left: 70px;
+}
+
+.content-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.9);
+    padding: 40px;
+    border-radius: 15px;
+}
+
+/* FORM */
+form label {
+    display: block;
+    font-weight: 500;
+}
+
+form input,
+form select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* =========================
+   BOTÕES (CORRIGIDO DE VERDADE)
+========================= */
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    height: 38px;      /* mesma altura */
+    width: 140px;      /* mesmo tamanho fixo */
+
+    padding: 0;        /* remove diferença interna */
+}
+
+/* PRINCIPAL */
+.btn-primary {
+    background: #007BFF;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+/* VERDE */
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #1e7e34;
+}
+
+/* VERMELHO */
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b52a37;
+}
+
+/* =========================
+   AÇÕES DA TABELA (CORRETO)
+========================= */
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.actions form {
+    margin: 0;
+    display: flex;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+/* TABELA */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th {
+    background: #007BFF;
+    color: white;
+    padding: 10px;
+}

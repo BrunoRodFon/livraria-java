@@ -1,19 +1,10 @@
 package com.livraria.controller;
 
 import com.livraria.model.Livro;
-import com.livraria.model.Autor;
-import com.livraria.model.Genero;
-import com.livraria.repository.LivroRepository;
-import com.livraria.repository.AutorRepository;
-import com.livraria.repository.GeneroRepository;
-
-import com.livraria.service.impl.LivroService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.livraria.impl.LivroService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/livros")
@@ -38,5 +29,10 @@ public class LivroController {
     @GetMapping("/lista")
     public String listar(Model model) {
         return service.listar(model);
+    }
+
+    @PostMapping("/deletar/{id}")
+    public String deletar(@PathVariable Long id, Model model) {
+        return service.deletar(id, model);
     }
 }

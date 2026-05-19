@@ -2,163 +2,123 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Alunos</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 800px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-
-        h1, h2 {
-            text-align: center;
-        }
-
-        form {
-            margin-bottom: 30px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0 15px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .erro {
-            background-color: #ffe5e5;
-            color: #cc0000;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        .link {
-            margin-bottom: 15px;
-        }
-
-        .link a {
-            text-decoration: none;
-            color: #007BFF;
-        }
-
-        .link a:hover {
-            text-decoration: underline;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th {
-            background-color: #007BFF;
-            color: white;
-            padding: 10px;
-        }
-
-        table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-<div class="container">
+<div class="layout">
 
-    <h1>Cadastro de Alunos</h1>
+    <!-- BOTÃO MENU -->
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div id="overlay" onclick="toggleMenu()"></div>
 
-    <!-- Botão Voltar -->
-    <div class="link">
-        <a class="btn-voltar" th:href="@{/}">Home</a>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <img src="/images/logo.png" class="logo">
+
+        <a th:href="@{/}" class="menu-item">
+            🏠 <span class="menu-text">Início</span>
+        </a>
+
+        <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
+        <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
+        <a href="/livros/lista" class="menu-item">📚 <span class="menu-text">Livros</span></a>
+        <a href="/exemplares/lista" class="menu-item">📖 <span class="menu-text">Exemplares de Livros</span></a>
+        <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
+        <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
     </div>
 
-    <!-- Mensagem de erro -->
-    <div th:if="${erro}" class="erro">
-        <p th:text="${erro}"></p>
-    </div>
+    <!-- CONTEÚDO -->
+    <div class="content" id="content">
+        <div class="content-inner">
 
-    <!-- Formulário de cadastro -->
-    <form th:action="@{/alunos}" th:object="${aluno}" method="post">
+            <h1>📚 Alunos</h1>
 
-        <label>Nome:</label>
-        <input type="text" th:field="*{nome}" required />
+            <!-- ALERTA DE ERRO -->
+            <div th:if="${erro}" style="color:red; font-weight:bold; margin-bottom:10px;">
+                <p th:text="${erro}"></p>
+            </div>
 
-        <label>RA:</label>
-        <input type="text" th:field="*{ra}" required />
+            <!-- FORMULÁRIO -->
+            <form th:action="@{/alunos}" th:object="${aluno}" method="post">
 
-        <label>Responsável:</label>
-        <select th:field="*{responsavel}">
-            <option value="">Selecione</option>
-            <option th:each="resp : ${responsaveis}"
-                    th:value="${resp.id}"
-                    th:text="${resp.nome}">
-            </option>
-        </select>
+                <label>Nome:</label>
+                <input type="text" th:field="*{nome}" required />
 
-        <div class="link">
-            <a href="/responsaveis">+ Cadastrar novo responsável</a>
+                <!-- ❌ REMOVIDO CPF (não existe no model) -->
+
+                <label>RA:</label>
+                <input type="text" th:field="*{ra}" required />
+
+                <label>Responsável:</label>
+                <select th:field="*{responsavel.id}">
+                    <option value="">Selecione</option>
+                    <option th:each="r : ${responsaveis}"
+                            th:value="${r.id}"
+                            th:text="${r.nome}">
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+
+            <hr/>
+
+            <!-- TABELA -->
+            <h2>Lista de Alunos</h2>
+
+            <table>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>RA</th>
+                    <th>Responsável</th>
+                    <th>Ações</th>
+                </tr>
+
+                <tr th:each="aluno : ${alunos}">
+
+                    <td th:text="${aluno.id}"></td>
+                    <td th:text="${aluno.nome}"></td>
+
+                    <!-- ❌ REMOVIDO CPF -->
+                    <td th:text="${aluno.ra}"></td>
+
+                    <td th:text="${aluno.responsavel != null ? aluno.responsavel.nome : 'Sem responsável'}"></td>
+
+                    <td style="display:flex; gap:5px;">
+
+                        <!-- EXCLUIR -->
+                        <form th:action="@{'/alunos/deletar/' + ${aluno.id}}" method="post">
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Tem certeza que deseja excluir este aluno?')">
+                                Excluir
+                            </button>
+                        </form>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
         </div>
-
-        <button type="submit">Salvar</button>
-    </form>
-
-    <hr/>
-
-    <!-- Lista de alunos -->
-    <h2>Lista de Alunos</h2>
-
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>RA</th>
-            <th>Responsável</th>
-        </tr>
-        <tr th:each="aluno : ${alunos}">
-            <td th:text="${aluno.id}"></td>
-            <td th:text="${aluno.nome}"></td>
-            <td th:text="${aluno.ra}"></td>
-            <td th:text="${aluno.responsavel != null ? aluno.responsavel.nome : 'Sem responsável'}"></td>
-        </tr>
-    </table>
+    </div>
 
 </div>
+
+<script>
+    function toggleMenu() {
+        const sidebar = document.getElementById("sidebar");
+        const content = document.getElementById("content");
+
+        sidebar.classList.toggle("collapsed");
+        content.classList.toggle("collapsed");
+    }
+</script>
 
 </body>
 </html>

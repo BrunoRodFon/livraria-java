@@ -2,115 +2,114 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Exemplares de Livros</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 900px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-
-        h1, h2 {
-            text-align: center;
-        }
-
-        .btn-container {
-            display: flex;
-            justify-content: flex-start;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            text-decoration: none;
-            background-color: #007BFF;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th {
-            background-color: #007BFF;
-            color: white;
-            padding: 10px;
-            text-align: left;
-        }
-
-        table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-<div class="container">
+<div class="layout">
 
-    <h1>Exemplares de Livros</h1>
+    <!-- BOTÃO MENU -->
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div id="overlay" onclick="toggleMenu()"></div>
 
-    <div class="btn-container">
-        <a class="btn" th:href="@{/}">Voltar</a>
-        <a class="btn" href="/livros/form">Adicionar livro</a>
-        <a class="btn" href="/exemplares/form">Adicionar exemplar</a>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <img src="/images/logo.png" class="logo">
+
+        <a th:href="@{/}" class="menu-item">
+            🏠 <span class="menu-text">Início</span>
+        </a>
+        <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
+        <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
+
+        <a href="/livros/lista" class="menu-item">
+            📚 <span class="menu-text">Livros</span>
+        </a>
+
+        <a href="/exemplares/lista" class="menu-item">
+            📖 <span class="menu-text">Exemplares de Livros</span>
+        </a>
+
+        <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
+        <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
     </div>
 
-    <h2>Lista de Exemplares</h2>
+    <!-- CONTEÚDO -->
+    <div class="content" id="content">
+        <div class="content-inner">
 
-    <div class="table-container">
-        <table>
-            <thead>
-            <tr>
-                <th>Código</th>
-                <th>Título</th>
-                <th>Autor</th>
-                <th>Gênero</th>
-                <th>Descrição</th>
-                <th>Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="ex : ${exemplares}">
-                <td th:text="${ex.cod}"></td>
-                <td th:text="${ex.livro.titulo}"></td>
-                <td th:text="${ex.livro.autor != null ? ex.livro.autor.nome : 'Sem autor'}"></td>
-                <td th:text="${ex.livro.genero != null ? ex.livro.genero.nome : 'Sem gênero'}"></td>
-                <td th:text="${ex.livro.descricao}"></td>
-                <td th:text="${ex.status}"></td>
-            </tr>
-            </tbody>
-        </table>
+            <h1>📖 Exemplares de Livros</h1>
+
+            <!-- ⭐ ALERTA DE ERRO (NOVO) -->
+            <div th:if="${erro}"
+                 style="color:red; font-weight:bold; margin-bottom:15px;">
+                <p th:text="${erro}"></p>
+            </div>
+
+            <!-- AÇÕES -->
+            <div class="form-actions" style="margin-bottom: 20px;">
+                <a href="/exemplares/form" class="btn btn-primary">
+                    + Adicionar exemplar
+                </a>
+            </div>
+
+            <h2>Lista de Exemplares</h2>
+
+            <!-- TABELA -->
+            <table>
+                <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Gênero</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="ex : ${exemplares}">
+                    <td th:text="${ex.cod}"></td>
+                    <td th:text="${ex.livro.titulo}"></td>
+                    <td th:text="${ex.livro.autor != null ? ex.livro.autor.nome : 'Sem autor'}"></td>
+                    <td th:text="${ex.livro.genero != null ? ex.livro.genero.nome : 'Sem gênero'}"></td>
+                    <td th:text="${ex.livro.descricao}"></td>
+                    <td th:text="${ex.status}"></td>
+
+                    <!-- BOTÃO EXCLUIR -->
+                    <td>
+                        <form th:action="@{'/exemplares/deletar/' + ${ex.id}}"
+                              method="post"
+                              onsubmit="return confirm('Tem certeza que deseja excluir este exemplar?');">
+
+                            <button type="submit" class="btn btn-danger">
+                                Excluir
+                            </button>
+
+                        </form>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
     </div>
 
 </div>
+
+<script>
+    function toggleMenu() {
+        const sidebar = document.getElementById("sidebar");
+        const content = document.getElementById("content");
+
+        sidebar.classList.toggle("collapsed");
+        content.classList.toggle("collapsed");
+    }
+</script>
 
 </body>
 </html>
