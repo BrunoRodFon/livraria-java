@@ -1,7 +1,6 @@
 package com.livraria.controller;
 
 import com.livraria.model.LivroExemplar;
-
 import com.livraria.impl.ExemplarService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +19,6 @@ public class ExemplarController {
     @GetMapping("/form")
     public String form(Model model) {
         return service.form(model);
-
     }
 
     @PostMapping("/salvar")

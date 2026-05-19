@@ -1,143 +1,102 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Adicionar Livro</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 500px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-
-        form label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        form input, form select, form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        form textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-            margin-bottom: 10px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .cancel-btn {
-            background-color: #6c757d;
-        }
-
-        .cancel-btn:hover {
-            background-color: #5a6268;
-        }
-
-        .link {
-            text-align: right;
-            margin-top: -15px;
-            margin-bottom: 15px;
-        }
-
-        .link a {
-            text-decoration: none;
-            color: #007BFF;
-            font-size: 13px;
-        }
-
-        .link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Mensagem de aviso */
-        .required-note {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-<div class="container">
+<div class="layout">
 
-    <h1>Adicionar Livro</h1>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div id="overlay" onclick="toggleMenu()"></div>
 
-    <form th:action="@{/livros/salvar}" th:object="${livro}" method="post">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <img src="/images/logo.png" class="logo">
 
-        <label for="titulo">Título <span style="color: red;">*</span></label>
-        <input type="text" id="titulo" th:field="*{titulo}" placeholder="Digite o título do livro" required/>
+        <a th:href="@{/}" class="menu-item">
+            🏠 <span class="menu-text">Início</span>
+        </a>
+        <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
+        <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
+        <a href="/livros/lista" class="menu-item">📚 <span class="menu-text">Livros</span></a>
+        <a href="/exemplares/lista" class="menu-item">📖 <span class="menu-text">Exemplares de Livros</span></a>
+        <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
+        <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
+    </div>
 
-        <label for="autor">Autor <span style="color: red;">*</span></label>
-        <select id="autor" th:field="*{autor.id}" required>
-            <option value="" disabled selected>-- Selecione um autor --</option>
-            <option th:each="autor : ${autores}" th:value="${autor.id}" th:text="${autor.nome}"></option>
-        </select>
-        <div class="link">
-            <a href="/autores/form">+ Adicionar novo autor</a>
+    <!-- CONTEÚDO -->
+    <div class="content" id="content">
+        <div class="content-inner">
+
+            <h1>➕ Adicionar Livro</h1>
+
+            <form th:action="@{/livros/salvar}" th:object="${livro}" method="post">
+
+                <!-- TÍTULO -->
+                <label>Título *</label>
+                <input type="text" th:field="*{titulo}" required/>
+
+                <!-- AUTOR -->
+                <label>Autor *</label>
+                <select th:field="*{autor.id}" required>
+                    <option value="">Selecione</option>
+                    <option th:each="autor : ${autores}"
+                            th:value="${autor.id}"
+                            th:text="${autor.nome}">
+                    </option>
+                </select>
+
+                <a href="/autores/form" class="btn btn-small">
+                    + Adicionar novo autor
+                </a>
+
+                <!-- GÊNERO -->
+                <label style="margin-top: 10px;">Gênero *</label>
+                <select th:field="*{genero.id}" required>
+                    <option value="">Selecione</option>
+                    <option th:each="genero : ${generos}"
+                            th:value="${genero.id}"
+                            th:text="${genero.nome}">
+                    </option>
+                </select>
+
+                <a href="/generos/form" class="btn btn-small">
+                    + Adicionar novo gênero
+                </a>
+
+                <!-- DESCRIÇÃO -->
+                <label style="margin-top: 10px;">Descrição</label>
+                <textarea th:field="*{descricao}"></textarea>
+
+                <!-- AÇÕES -->
+                <div class="form-actions">
+
+                    <button type="submit" class="btn btn-primary">
+                        Salvar
+                    </button>
+
+                    <a href="/exemplares/lista" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
         </div>
-
-        <label for="genero">Gênero <span style="color: red;">*</span></label>
-        <select id="genero" th:field="*{genero.id}" required>
-            <option value="" disabled selected>-- Selecione um gênero --</option>
-            <option th:each="genero : ${generos}" th:value="${genero.id}" th:text="${genero.nome}"></option>
-        </select>
-        <div class="link">
-            <a href="/generos/form">+ Adicionar novo gênero</a>
-        </div>
-
-        <label for="descricao">Descrição</label>
-        <textarea id="descricao" th:field="*{descricao}" placeholder="Digite uma descrição opcional"></textarea>
-
-        <div class="required-note">Campos com <span style="color: red;">*</span> são obrigatórios.</div>
-
-        <button type="submit">Salvar</button>
-        <a href="/livros/lista"><button type="button" class="cancel-btn">Cancelar</button></a>
-
-    </form>
+    </div>
 
 </div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById("sidebar").classList.toggle("collapsed");
+        document.getElementById("content").classList.toggle("collapsed");
+    }
+</script>
 
 </body>
 </html>

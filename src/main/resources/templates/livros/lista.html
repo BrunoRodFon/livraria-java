@@ -2,118 +2,74 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Livros</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 800px;
-            margin: 40px auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-
-        h1, h2 {
-            text-align: center;
-        }
-
-        .link {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .link a, button {
-            text-decoration: none;
-            color: #007BFF;
-            background-color: #007BFF;
-            padding: 8px 15px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            color: white;
-        }
-
-        .link a:hover, button:hover {
-            background-color: #0056b3;
-            text-decoration: none;
-            color: white;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th {
-            background-color: #007BFF;
-            color: white;
-            padding: 10px;
-        }
-
-        table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .erro {
-            background-color: #ffe5e5;
-            color: #cc0000;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-<div class="container">
+<div class="layout">
 
-    <h1>Lista de Livros</h1>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div id="overlay" onclick="toggleMenu()"></div>
 
-    <div class="link">
-        <a href="/livros/form">+ Adicionar novo livro</a>
-        <a href="/exemplares/lista">← Voltar para Exemplares</a>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <img src="/images/logo.png" class="logo">
+
+        <a th:href="@{/}" class="menu-item">
+            🏠 <span class="menu-text">Início</span>
+        </a>
+        <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
+        <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
+        <a href="/livros/lista" class="menu-item">📚 <span class="menu-text">Livros</span></a>
+        <a href="/exemplares/lista" class="menu-item">📖 <span class="menu-text">Exemplares de Livros</span></a>
+        <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
+        <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
     </div>
 
-    <div th:if="${erro}" class="erro">
-        <p th:text="${erro}"></p>
+    <!-- CONTEÚDO -->
+    <div class="content" id="content">
+        <div class="content-inner">
+
+            <h1>📚 Lista de Livros</h1>
+
+            <!-- AÇÕES -->
+            <div class="form-actions" style="margin-bottom: 20px;">
+                <a href="/livros/form" class="btn btn-primary">
+                    + Adicionar novo livro
+                </a>
+            </div>
+
+            <!-- TABELA -->
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Gênero</th>
+                    <th>Descrição</th>
+                </tr>
+
+                <tr th:each="livro : ${livros}">
+                    <td th:text="${livro.id}"></td>
+                    <td th:text="${livro.titulo}"></td>
+                    <td th:text="${livro.autor != null ? livro.autor.nome : 'Sem autor'}"></td>
+                    <td th:text="${livro.genero != null ? livro.genero.nome : 'Sem gênero'}"></td>
+                    <td th:text="${livro.descricao}"></td>
+                </tr>
+            </table>
+
+        </div>
     </div>
-
-    <hr/>
-
-    <h2>Lista de Livros</h2>
-
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Autor</th>
-            <th>Gênero</th>
-            <th>Descrição</th>
-        </tr>
-
-        <tr th:each="livro : ${livros}">
-            <td th:text="${livro.id}"></td>
-            <td th:text="${livro.titulo}"></td>
-            <td th:text="${livro.autor != null ? livro.autor.nome : 'Sem autor'}"></td>
-            <td th:text="${livro.genero != null ? livro.genero.nome : 'Sem gênero'}"></td>
-            <td th:text="${livro.descricao}"></td>
-        </tr>
-    </table>
 
 </div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById("sidebar").classList.toggle("collapsed");
+        document.getElementById("content").classList.toggle("collapsed");
+    }
+</script>
 
 </body>
 </html>

@@ -22,7 +22,7 @@ body {
     width: 50px;
 }
 
-/* LOGO NORMAL */
+/* LOGO */
 .logo {
     width: 120px;
     display: block;
@@ -30,7 +30,6 @@ body {
     transition: 0.3s;
 }
 
-/* LOGO QUANDO SIDEBAR FECHADA */
 .sidebar.collapsed .logo {
     width: 40px;
 }
@@ -100,27 +99,102 @@ body {
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
-/* FORM */
-input, select, textarea {
+/* =========================
+   FORM CORRIGIDO (IMPORTANTE)
+========================= */
+
+form label {
+    display: block;
+    font-weight: 500;
+}
+
+form input,
+form select,
+form textarea {
     width: 100%;
     padding: 10px;
     margin: 5px 0 15px;
     border-radius: 8px;
     border: 1px solid #ccc;
+    font-size: 14px;
+    display: block;
 }
 
-/* BOTÃO PADRÃO */
-.form-btn {
-    width: 100%;
-    padding: 12px;
-    background: #007BFF;
-    color: white;
-    border: none;
+/* impede elementos de ficarem lado a lado */
+form a,
+form button {
+    display: inline-flex;
+}
+
+/* =========================
+   BOTÕES PADRONIZADOS
+========================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 8px;
     cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: 0.2s;
+    font-family: inherit;
 }
 
-/* TABELA */
+/* PRINCIPAL */
+.btn-primary {
+    background: #007BFF;
+    color: white;
+    padding: 10px 18px;
+    font-size: 14px;
+    min-width: 150px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+/* SECUNDÁRIO */
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    padding: 10px 18px;
+    font-size: 14px;
+    min-width: 150px;
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* BOTÃO PEQUENO */
+.btn-small {
+    background: #e9ecef;
+    color: #333;
+    padding: 5px 10px;
+    font-size: 12px;
+    width: fit-content;
+    border-radius: 6px;
+    margin: 5px 0 15px 0;
+    display: inline-flex;
+}
+
+.btn-small:hover {
+    background: #d6d8db;
+}
+
+/* AGRUPAMENTO DE AÇÕES */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+/* TABELAS */
 table {
     width: 100%;
     margin-top: 20px;
@@ -138,7 +212,7 @@ td {
     border-bottom: 1px solid #ddd;
 }
 
-/* DASHBOARD (INDEX) */
+/* DASHBOARD */
 .cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -179,4 +253,3 @@ td {
         grid-template-columns: 1fr;
     }
 }
-

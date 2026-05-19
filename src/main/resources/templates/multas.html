@@ -18,10 +18,18 @@
     <div class="sidebar" id="sidebar">
         <img src="images/logo.png" class="logo">
 
-        <a href="/" class="menu-item">🏠 <span class="menu-text">Início</span></a>
+        <a th:href="@{/}" class="menu-item">
+            🏠 <span class="menu-text">Início</span>
+        </a>
         <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
         <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
-        <a href="/livros/lista" class="menu-item">📖 <span class="menu-text">Livros</span></a>
+        <a href="/livros/lista" class="menu-item">
+            📚 <span class="menu-text">Livros</span>
+        </a>
+
+        <a href="/exemplares/lista" class="menu-item">
+            📖 <span class="menu-text">Exemplares de Livros</span>
+        </a>
         <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
         <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
     </div>
@@ -58,7 +66,7 @@
                     <option value="PENDENTE">Pendente</option>
                 </select>
 
-                <button type="submit" class="form-btn">Salvar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
             </form>
 
             <h2>Lista de Multas</h2>
