@@ -1,7 +1,6 @@
 package com.livraria.controller;
 
 import com.livraria.model.Livro;
-
 import com.livraria.impl.LivroService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,5 +29,10 @@ public class LivroController {
     @GetMapping("/lista")
     public String listar(Model model) {
         return service.listar(model);
+    }
+
+    @PostMapping("/deletar/{id}")
+    public String deletar(@PathVariable Long id, Model model) {
+        return service.deletar(id, model);
     }
 }

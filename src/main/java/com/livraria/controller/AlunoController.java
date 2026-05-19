@@ -1,7 +1,7 @@
 package com.livraria.controller;
 
-import com.livraria.model.Aluno;
 import com.livraria.impl.AlunoService;
+import com.livraria.model.Aluno;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,4 +25,16 @@ public class AlunoController {
         return service.salvar(aluno, model);
     }
 
+    @PostMapping("/alunos/deletar/{id}")
+    public String deletar(@PathVariable Long id, Model model) {
+
+        try {
+            service.deletarAluno(id);
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return service.listar(model);
+        }
+
+        return "redirect:/alunos";
+    }
 }

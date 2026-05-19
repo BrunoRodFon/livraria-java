@@ -9,42 +9,30 @@
 
 <div class="layout">
 
-    <!-- BOTÃO MENU -->
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div id="overlay" onclick="toggleMenu()"></div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <img src="/images/logo.png" class="logo">
 
-        <a th:href="@{/}" class="menu-item">
-            🏠 <span class="menu-text">Início</span>
-        </a>
+        <a th:href="@{/}" class="menu-item">🏠 <span class="menu-text">Início</span></a>
         <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
         <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
-        <a href="/livros/lista" class="menu-item">
-            📚 <span class="menu-text">Livros</span>
-        </a>
-
-        <a href="/exemplares/lista" class="menu-item">
-            📖 <span class="menu-text">Exemplares de Livros</span>
-        </a>
+        <a href="/livros/lista" class="menu-item">📚 <span class="menu-text">Livros</span></a>
+        <a href="/exemplares/lista" class="menu-item">📖 <span class="menu-text">Exemplares de Livros</span></a>
         <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
         <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
     </div>
 
-    <!-- CONTEÚDO -->
     <div class="content" id="content">
         <div class="content-inner">
 
             <h1>👨‍👩‍👧 Responsáveis</h1>
 
-            <!-- ERRO -->
             <div th:if="${erro}" class="erro">
                 <p th:text="${erro}"></p>
             </div>
 
-            <!-- FORM -->
             <form th:action="@{/responsaveis}" th:object="${responsavel}" method="post">
 
                 <label>Nome:</label>
@@ -64,7 +52,6 @@
 
             <hr/>
 
-            <!-- TABELA -->
             <h2>Lista de Responsáveis</h2>
 
             <table>
@@ -73,6 +60,7 @@
                     <th>CPF</th>
                     <th>Endereço</th>
                     <th>Telefone</th>
+                    <th>Ações</th>
                 </tr>
 
                 <tr th:each="r : ${responsaveis}">
@@ -80,6 +68,16 @@
                     <td th:text="${r.cpf}"></td>
                     <td th:text="${r.endereco}"></td>
                     <td th:text="${r.telefone}"></td>
+
+                    <td>
+                        <form th:action="@{'/responsaveis/deletar/' + ${r.id}}" method="post">
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Deseja excluir este responsável?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             </table>
 

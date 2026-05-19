@@ -3,10 +3,7 @@ package com.livraria.impl;
 import com.livraria.model.Aluno;
 import com.livraria.repository.AlunoRepository;
 import com.livraria.repository.EmprestimoRepository;
-import com.livraria.repository.ResponsavelRepository;
 import com.livraria.IAlunoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -16,58 +13,42 @@ import java.util.List;
 public class AlunoService implements IAlunoService {
 
     private final AlunoRepository alunoRepository;
-    private final ResponsavelRepository responsavelRepository;
+    private final EmprestimoRepository emprestimoRepository;
 
-    public AlunoService(AlunoRepository alunoRepository, ResponsavelRepository responsavelRepository) {
+    public AlunoService(AlunoRepository alunoRepository,
+                        EmprestimoRepository emprestimoRepository) {
         this.alunoRepository = alunoRepository;
-        this.responsavelRepository = responsavelRepository;
+        this.emprestimoRepository = emprestimoRepository;
     }
 
     @Override
     public String listar(Model model) {
         model.addAttribute("aluno", new Aluno());
         model.addAttribute("alunos", alunoRepository.findAll());
-        model.addAttribute("responsaveis", responsavelRepository.findAll());
-
         return "alunos";
     }
 
     @Override
     public String salvar(Aluno aluno, Model model) {
-        try {
-            alunoRepository.save(aluno);
-            return "redirect:/alunos";
-
-        } catch (DataIntegrityViolationException e) {
-
-            model.addAttribute("erro", "Já existe um aluno com esse RA!");
-            model.addAttribute("aluno", aluno);
-            model.addAttribute("alunos", alunoRepository.findAll());
-
-            model.addAttribute("responsaveis", responsavelRepository.findAll());
-
-            return "alunos";
-        }
+        alunoRepository.save(aluno);
+        return "redirect:/alunos";
     }
 
-    @Autowired
-    private EmprestimoRepository emprestimoRepository;
+    @Override
+    public void deletarAluno(Long id) {
 
-    public void deletarAluno(Long alunoId) {
+        long emprestimosAtivos =
+                emprestimoRepository.countByAlunoIdAndAtivoTrue(id);
 
-        int ativos = emprestimoRepository.countByAlunoIdAndAtivoTrue(alunoId);
-
-        if (ativos > 0) {
+        if (emprestimosAtivos > 0) {
             throw new RuntimeException("Aluno possui empréstimos ativos");
         }
 
-        alunoRepository.deleteById(alunoId);
+        alunoRepository.deleteById(id);
     }
 
     @Override
     public List<Aluno> listarTodos() {
         return alunoRepository.findAll();
     }
-
-
 }

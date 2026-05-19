@@ -41,13 +41,17 @@
 
             <h1>📖 Exemplares de Livros</h1>
 
+            <!-- ⭐ ALERTA DE ERRO (NOVO) -->
+            <div th:if="${erro}"
+                 style="color:red; font-weight:bold; margin-bottom:15px;">
+                <p th:text="${erro}"></p>
+            </div>
+
             <!-- AÇÕES -->
             <div class="form-actions" style="margin-bottom: 20px;">
-
                 <a href="/exemplares/form" class="btn btn-primary">
                     + Adicionar exemplar
                 </a>
-
             </div>
 
             <h2>Lista de Exemplares</h2>
@@ -62,6 +66,7 @@
                     <th>Gênero</th>
                     <th>Descrição</th>
                     <th>Status</th>
+                    <th>Ações</th>
                 </tr>
                 </thead>
 
@@ -73,6 +78,20 @@
                     <td th:text="${ex.livro.genero != null ? ex.livro.genero.nome : 'Sem gênero'}"></td>
                     <td th:text="${ex.livro.descricao}"></td>
                     <td th:text="${ex.status}"></td>
+
+                    <!-- BOTÃO EXCLUIR -->
+                    <td>
+                        <form th:action="@{'/exemplares/deletar/' + ${ex.id}}"
+                              method="post"
+                              onsubmit="return confirm('Tem certeza que deseja excluir este exemplar?');">
+
+                            <button type="submit" class="btn btn-danger">
+                                Excluir
+                            </button>
+
+                        </form>
+                    </td>
+
                 </tr>
                 </tbody>
             </table>

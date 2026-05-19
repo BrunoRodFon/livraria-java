@@ -43,7 +43,6 @@ body {
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 10px;
-    transition: 0.3s;
 }
 
 .menu-item:hover {
@@ -56,10 +55,6 @@ body {
 
 .sidebar.collapsed .menu-text {
     display: none;
-}
-
-.sidebar.collapsed .menu-item {
-    justify-content: center;
 }
 
 /* BOTÃO MENU */
@@ -96,105 +91,99 @@ body {
     background: rgba(255,255,255,0.9);
     padding: 40px;
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
-/* =========================
-   FORM CORRIGIDO (IMPORTANTE)
-========================= */
-
+/* FORM */
 form label {
     display: block;
     font-weight: 500;
 }
 
 form input,
-form select,
-form textarea {
+form select {
     width: 100%;
     padding: 10px;
     margin: 5px 0 15px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    font-size: 14px;
-    display: block;
-}
-
-/* impede elementos de ficarem lado a lado */
-form a,
-form button {
-    display: inline-flex;
 }
 
 /* =========================
-   BOTÕES PADRONIZADOS
+   BOTÕES (CORRIGIDO DE VERDADE)
 ========================= */
 
 .btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
+
     border-radius: 8px;
     cursor: pointer;
-    text-decoration: none;
     border: none;
-    transition: 0.2s;
-    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    height: 38px;      /* mesma altura */
+    width: 140px;      /* mesmo tamanho fixo */
+
+    padding: 0;        /* remove diferença interna */
 }
 
 /* PRINCIPAL */
 .btn-primary {
     background: #007BFF;
     color: white;
-    padding: 10px 18px;
-    font-size: 14px;
-    min-width: 150px;
-    font-weight: 500;
 }
 
 .btn-primary:hover {
     background: #0056b3;
 }
 
-/* SECUNDÁRIO */
-.btn-secondary {
-    background: #6c757d;
+/* VERDE */
+.btn-success {
+    background: #28a745;
     color: white;
-    padding: 10px 18px;
-    font-size: 14px;
-    min-width: 150px;
-    font-weight: 500;
 }
 
-.btn-secondary:hover {
-    background: #5a6268;
+.btn-success:hover {
+    background: #1e7e34;
 }
 
-/* BOTÃO PEQUENO */
-.btn-small {
-    background: #e9ecef;
-    color: #333;
-    padding: 5px 10px;
-    font-size: 12px;
-    width: fit-content;
-    border-radius: 6px;
-    margin: 5px 0 15px 0;
-    display: inline-flex;
+/* VERMELHO */
+.btn-danger {
+    background: #dc3545;
+    color: white;
 }
 
-.btn-small:hover {
-    background: #d6d8db;
+.btn-danger:hover {
+    background: #b52a37;
 }
 
-/* AGRUPAMENTO DE AÇÕES */
-.form-actions {
+/* =========================
+   AÇÕES DA TABELA (CORRETO)
+========================= */
+
+.actions {
     display: flex;
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
-    justify-content: flex-start;
-    margin-top: 20px;
+    flex-wrap: nowrap;
 }
 
-/* TABELAS */
+.actions form {
+    margin: 0;
+    display: flex;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+/* TABELA */
 table {
     width: 100%;
     margin-top: 20px;
@@ -205,51 +194,4 @@ th {
     background: #007BFF;
     color: white;
     padding: 10px;
-}
-
-td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-/* DASHBOARD */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
-
-.card {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 25px;
-    border-radius: 15px;
-    color: white;
-    font-weight: 500;
-}
-
-.card .icon {
-    font-size: 30px;
-}
-
-.card h2 {
-    margin: 5px 0 0;
-}
-
-/* CORES */
-.blue { background: linear-gradient(135deg, #007BFF, #00c6ff); }
-.green { background: linear-gradient(135deg, #28a745, #85e085); }
-.brown { background: linear-gradient(135deg, #8B4513, #d2691e); }
-.purple { background: linear-gradient(135deg, #6f42c1, #a084e8); }
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-/* RESPONSIVO */
-@media (max-width: 900px) {
-    .cards {
-        grid-template-columns: 1fr;
-    }
 }

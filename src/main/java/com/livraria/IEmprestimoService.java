@@ -10,11 +10,13 @@ public interface IEmprestimoService {
 
     void devolver(Long emprestimoId);
 
+    void deletar(Long emprestimoId);
+
     boolean estaAtrasado(Emprestimo emprestimo);
 
-    double calcularMulta(Emprestimo emprestimo);
+    // 🔥 CORREÇÃO IMPORTANTE:
+    // agora retorna void porque você já salva a Multa no banco
+    void calcularMulta(Emprestimo emprestimo);
 
-    // ➕ novos métodos para o controller
     List<Emprestimo> listarTodos();
-
 }

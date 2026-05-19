@@ -3,9 +3,7 @@ package com.livraria.impl;
 import com.livraria.model.Autor;
 import com.livraria.model.Genero;
 import com.livraria.model.Livro;
-import com.livraria.repository.AutorRepository;
-import com.livraria.repository.GeneroRepository;
-import com.livraria.repository.LivroRepository;
+import com.livraria.repository.*;
 import com.livraria.ILivroService;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -14,15 +12,23 @@ import org.springframework.ui.Model;
 public class LivroService implements ILivroService {
 
     private final LivroRepository livroRepo;
-
     private final AutorRepository autorRepo;
-
     private final GeneroRepository generoRepo;
+    private final LivroExemplarRepository exemplarRepo;
+    private final EmprestimoRepository emprestimoRepo;
 
-    public LivroService(LivroRepository livroRepo, AutorRepository autorRepo, GeneroRepository generoRepo) {
+    public LivroService(
+            LivroRepository livroRepo,
+            AutorRepository autorRepo,
+            GeneroRepository generoRepo,
+            LivroExemplarRepository exemplarRepo,
+            EmprestimoRepository emprestimoRepo
+    ) {
         this.livroRepo = livroRepo;
         this.autorRepo = autorRepo;
         this.generoRepo = generoRepo;
+        this.exemplarRepo = exemplarRepo;
+        this.emprestimoRepo = emprestimoRepo;
     }
 
     @Override
@@ -35,6 +41,7 @@ public class LivroService implements ILivroService {
 
     @Override
     public String salvar(Livro livro) {
+
         if (livro.getAutor() != null && livro.getAutor().getId() != null) {
             Autor autor = autorRepo.findById(livro.getAutor().getId()).orElse(null);
             livro.setAutor(autor);
@@ -53,5 +60,23 @@ public class LivroService implements ILivroService {
     public String listar(Model model) {
         model.addAttribute("livros", livroRepo.findAll());
         return "livros/lista";
+    }
+
+    @Override
+    public String deletar(Long id, Model model) {
+
+        long exemplares = exemplarRepo.countByLivroId(id);
+        long emprestimos = emprestimoRepo.countByLivroExemplar_Livro_Id(id);
+
+        if (exemplares > 0 || emprestimos > 0) {
+            model.addAttribute("erro",
+                    "Não é possível excluir: livro possui exemplares ou empréstimos vinculados.");
+
+            model.addAttribute("livros", livroRepo.findAll());
+            return "livros/lista";
+        }
+
+        livroRepo.deleteById(id);
+        return "redirect:/livros/lista";
     }
 }

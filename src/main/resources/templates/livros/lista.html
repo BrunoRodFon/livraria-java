@@ -12,35 +12,31 @@
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div id="overlay" onclick="toggleMenu()"></div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <img src="/images/logo.png" class="logo">
 
-        <a th:href="@{/}" class="menu-item">
-            🏠 <span class="menu-text">Início</span>
-        </a>
+        <a th:href="@{/}" class="menu-item">🏠 <span class="menu-text">Início</span></a>
         <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
         <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
         <a href="/livros/lista" class="menu-item">📚 <span class="menu-text">Livros</span></a>
-        <a href="/exemplares/lista" class="menu-item">📖 <span class="menu-text">Exemplares de Livros</span></a>
+        <a href="/exemplares/lista" class="menu-item">📖 <span class="menu-text">Exemplares</span></a>
         <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
         <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
     </div>
 
-    <!-- CONTEÚDO -->
     <div class="content" id="content">
         <div class="content-inner">
 
             <h1>📚 Lista de Livros</h1>
 
-            <!-- AÇÕES -->
-            <div class="form-actions" style="margin-bottom: 20px;">
-                <a href="/livros/form" class="btn btn-primary">
-                    + Adicionar novo livro
-                </a>
+            <div th:if="${erro}" class="erro">
+                <p th:text="${erro}"></p>
             </div>
 
-            <!-- TABELA -->
+            <div class="form-actions" style="margin-bottom: 20px;">
+                <a href="/livros/form" class="btn btn-primary">+ Adicionar novo livro</a>
+            </div>
+
             <table>
                 <tr>
                     <th>ID</th>
@@ -48,6 +44,7 @@
                     <th>Autor</th>
                     <th>Gênero</th>
                     <th>Descrição</th>
+                    <th>Ações</th>
                 </tr>
 
                 <tr th:each="livro : ${livros}">
@@ -56,12 +53,21 @@
                     <td th:text="${livro.autor != null ? livro.autor.nome : 'Sem autor'}"></td>
                     <td th:text="${livro.genero != null ? livro.genero.nome : 'Sem gênero'}"></td>
                     <td th:text="${livro.descricao}"></td>
+
+                    <td>
+                        <form th:action="@{'/livros/deletar/' + ${livro.id}}" method="post">
+                            <button type="submit"
+                                    onclick="return confirm('Deseja excluir este livro?')"
+                                    class="btn btn-danger">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             </table>
 
         </div>
     </div>
-
 </div>
 
 <script>

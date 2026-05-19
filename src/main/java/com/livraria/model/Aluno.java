@@ -10,10 +10,10 @@ public class Aluno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "Nome")
+    @Column(name = "nome")
     private String nome;
 
-    @Column(name = "RA", unique = true, nullable = false)
+    @Column(name = "ra", unique = true, nullable = false)
     private String ra;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -24,6 +24,10 @@ public class Aluno {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {

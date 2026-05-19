@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Multas</title>
-
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -16,22 +15,15 @@
 
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
-        <img src="images/logo.png" class="logo">
+        <img src="/images/logo.png" class="logo">
 
-        <a th:href="@{/}" class="menu-item">
-            🏠 <span class="menu-text">Início</span>
-        </a>
-        <a href="/alunos" class="menu-item">📚 <span class="menu-text">Alunos</span></a>
-        <a href="/responsaveis" class="menu-item">👨‍👩‍👧 <span class="menu-text">Responsáveis</span></a>
-        <a href="/livros/lista" class="menu-item">
-            📚 <span class="menu-text">Livros</span>
-        </a>
-
-        <a href="/exemplares/lista" class="menu-item">
-            📖 <span class="menu-text">Exemplares de Livros</span>
-        </a>
-        <a href="/multas" class="menu-item">💰 <span class="menu-text">Multas</span></a>
-        <a href="/emprestimos" class="menu-item">📕 <span class="menu-text">Empréstimos</span></a>
+        <a th:href="@{/}" class="menu-item">🏠 Início</a>
+        <a href="/alunos" class="menu-item">📚 Alunos</a>
+        <a href="/responsaveis" class="menu-item">👨‍👩‍👧 Responsáveis</a>
+        <a href="/livros/lista" class="menu-item">📚 Livros</a>
+        <a href="/exemplares/lista" class="menu-item">📖 Exemplares</a>
+        <a href="/multas" class="menu-item">💰 Multas</a>
+        <a href="/emprestimos" class="menu-item">📕 Empréstimos</a>
     </div>
 
     <!-- CONTEÚDO -->
@@ -41,8 +33,17 @@
             <h1>💰 Multas</h1>
 
             <!-- ERRO -->
-            <div th:if="${erro}" class="erro">
+            <div th:if="${erro}"
+                 style="margin-bottom:15px;
+                        padding:10px;
+                        background:#ffebeb;
+                        color:#c62828;
+                        border:1px solid #c62828;
+                        border-radius:6px;
+                        font-weight:bold;">
+
                 <p th:text="${erro}"></p>
+
             </div>
 
             <!-- FORM -->
@@ -66,36 +67,80 @@
                     <option value="PENDENTE">Pendente</option>
                 </select>
 
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="submit" class="btn btn-primary">
+                    Salvar
+                </button>
+
             </form>
+
+            <hr/>
 
             <h2>Lista de Multas</h2>
 
             <table>
+
                 <tr>
                     <th>ID</th>
                     <th>Aluno</th>
                     <th>Livro</th>
                     <th>Valor</th>
                     <th>Status</th>
+                    <th>Ações</th>
                 </tr>
 
                 <tr th:each="m : ${multas}">
+
                     <td th:text="${m.id}"></td>
                     <td th:text="${m.emprestimo.aluno.nome}"></td>
                     <td th:text="${m.emprestimo.livroExemplar.livro.titulo}"></td>
                     <td th:text="${m.valor}"></td>
 
                     <td>
-                        <span th:if="${m.status.name() == 'PAGO'}" style="color: green; font-weight: bold;">
+                        <span th:if="${m.status.name() == 'PAGO'}"
+                              style="color: green; font-weight: bold;">
                             Pago
                         </span>
 
-                        <span th:if="${m.status.name() == 'PENDENTE'}" style="color: red; font-weight: bold;">
+                        <span th:if="${m.status.name() == 'PENDENTE'}"
+                              style="color: red; font-weight: bold;">
                             Pendente
                         </span>
                     </td>
+
+                    <td style="display:flex; gap:8px;">
+
+                        <!-- FINALIZAR (PAGAR) -->
+                        <form th:action="@{'/multas/finalizar/' + ${m.id}}"
+                              method="post"
+                              style="display:inline;">
+
+                            <button type="submit"
+                                    th:if="${m.status.name() == 'PENDENTE'}"
+                                    class="btn btn-success"
+                                    onclick="return confirm('Marcar multa como paga?')">
+                                Finalizar
+                            </button>
+
+                        </form>
+
+                        <!-- EXCLUIR -->
+                        <form th:action="@{'/multas/deletar/' + ${m.id}}"
+                              method="post"
+                              style="display:inline;">
+
+                            <button type="submit"
+                                    th:if="${m.status.name() == 'PAGO'}"
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Excluir multa?')">
+                                Excluir
+                            </button>
+
+                        </form>
+
+                    </td>
+
                 </tr>
+
             </table>
 
         </div>

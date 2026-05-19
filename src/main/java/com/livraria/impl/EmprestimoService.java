@@ -1,8 +1,14 @@
 package com.livraria.impl;
 
-import com.livraria.model.*;
-import com.livraria.repository.*;
 import com.livraria.IEmprestimoService;
+import com.livraria.model.Aluno;
+import com.livraria.model.Emprestimo;
+import com.livraria.model.LivroExemplar;
+import com.livraria.model.Multa;
+import com.livraria.repository.AlunoRepository;
+import com.livraria.repository.EmprestimoRepository;
+import com.livraria.repository.LivroExemplarRepository;
+import com.livraria.repository.MultaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,118 +23,130 @@ public class EmprestimoService implements IEmprestimoService {
     private EmprestimoRepository emprestimoRepository;
 
     @Autowired
-    private LivroExemplarRepository exemplarRepository;
+    private AlunoRepository alunoRepository;
 
     @Autowired
-    private AlunoRepository alunoRepository;
+    private LivroExemplarRepository exemplarRepository;
 
     @Autowired
     private MultaRepository multaRepository;
 
-    @Autowired
-    private MultaService multaService;
+    @Override
+    public List<Emprestimo> listarTodos() {
+        return emprestimoRepository.findAll();
+    }
 
-    // 📌 REALIZAR EMPRÉSTIMO
     @Override
     public Emprestimo realizarEmprestimo(Long alunoId, Long exemplarId) {
 
         Aluno aluno = alunoRepository.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
 
-        boolean possuiDivida = multaRepository.existsByEmprestimoAlunoAndStatus(
-                aluno,
-                Multa.Status.PENDENTE
-        );
-
-        if (possuiDivida) {
-            throw new RuntimeException("Aluno possui multa pendente!");
-        }
-
         LivroExemplar exemplar = exemplarRepository.findById(exemplarId)
                 .orElseThrow(() -> new RuntimeException("Exemplar não encontrado"));
 
+        // ✅ CORRETO: usando enum Status
         if (!exemplar.isDisponivel()) {
-            throw new RuntimeException("Livro não está disponível");
+            throw new RuntimeException("Exemplar indisponível");
         }
 
-        int ativos = emprestimoRepository.countByAlunoIdAndAtivoTrue(alunoId);
-        if (ativos >= 3) {
-            throw new RuntimeException("Aluno já possui 3 livros emprestados");
+        boolean possuiMulta = multaRepository
+                .existsByEmprestimoAlunoAndStatus(aluno, Multa.Status.PENDENTE);
+
+        if (possuiMulta) {
+            throw new RuntimeException("Aluno possui multas pendentes");
         }
 
         Emprestimo emp = new Emprestimo();
         emp.setAluno(aluno);
         emp.setLivroExemplar(exemplar);
-
-        LocalDate hoje = LocalDate.now();
-        emp.setDtEmprestimo(hoje);
-        emp.setDtPrevista(hoje.plusDays(30));
+        emp.setDtEmprestimo(LocalDate.now());
+        emp.setDtPrevista(LocalDate.now().plusDays(7));
         emp.setAtivo(true);
 
-        // 🔥 CORREÇÃO CRÍTICA
-        // SALVA PRIMEIRO O EMPRÉSTIMO NO BANCO
-        emp = emprestimoRepository.save(emp);
-
-        // 🔥 ATUALIZA O EXEMPLAR
+        // 🔥 muda status corretamente
         exemplar.setStatus(LivroExemplar.Status.EMPRESTADO);
         exemplarRepository.save(exemplar);
 
-        return emp;
+        return emprestimoRepository.save(emp);
     }
 
-    // 📌 DEVOLUÇÃO
     @Override
-    public void devolver(Long emprestimoId) {
+    public void devolver(Long id) {
 
-        Emprestimo emp = emprestimoRepository.findById(emprestimoId)
+        Emprestimo emp = emprestimoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
 
-        LivroExemplar exemplar = emp.getLivroExemplar(); // 🔥 FALTAVA ISSO
-
-        // 🔥 LIBERA EXEMPLAR
-        exemplar.setStatus(LivroExemplar.Status.DISPONIVEL);
-        exemplarRepository.save(exemplar);
-
-        emp.setDtDevolucao(LocalDate.now());
         emp.setAtivo(false);
+        emp.setDtDevolucao(LocalDate.now());
 
-        if (emp.getDtDevolucao().isAfter(emp.getDtPrevista())) {
+        LivroExemplar exemplar = emp.getLivroExemplar();
 
-            long diasAtraso = ChronoUnit.DAYS.between(
-                    emp.getDtPrevista(),
-                    emp.getDtDevolucao()
-            );
+        // 🔥 volta para disponível
+        exemplar.setStatus(LivroExemplar.Status.DISPONIVEL);
 
-            // 🔥 AGORA FUNCIONA
-            multaService.gerarMultaAtraso(emp, diasAtraso);
+        exemplarRepository.save(exemplar);
+        emprestimoRepository.save(emp);
+
+        calcularMulta(emp);
+    }
+
+    @Override
+    public boolean estaAtrasado(Emprestimo emprestimo) {
+
+        if (emprestimo.getDtPrevista() == null || emprestimo.getDtDevolucao() == null) {
+            return false;
         }
 
-        emprestimoRepository.save(emp);
+        return ChronoUnit.DAYS.between(
+                emprestimo.getDtPrevista(),
+                emprestimo.getDtDevolucao()
+        ) > 0;
     }
 
-    // 📌 ATRASO
     @Override
-    public boolean estaAtrasado(Emprestimo emp) {
-        return emp.getDtDevolucao() == null &&
-                LocalDate.now().isAfter(emp.getDtPrevista());
-    }
+    public void calcularMulta(Emprestimo emprestimo) {
 
-    // 📌 MULTA
-    @Override
-    public double calcularMulta(Emprestimo emp) {
+        if (!estaAtrasado(emprestimo)) {
+            return;
+        }
 
-        if (!estaAtrasado(emp)) return 0;
-
-        long dias = ChronoUnit.DAYS.between(
-                emp.getDtPrevista(),
-                LocalDate.now()
+        long diasAtraso = ChronoUnit.DAYS.between(
+                emprestimo.getDtPrevista(),
+                emprestimo.getDtDevolucao()
         );
 
-        return dias * 2.0;
+        boolean jaExiste = multaRepository
+                .existsByEmprestimoAndTipo(emprestimo, Multa.Tipo.ATRASO);
+
+        if (jaExiste) {
+            return;
+        }
+
+        Multa multa = new Multa();
+        multa.setEmprestimo(emprestimo);
+        multa.setTipo(Multa.Tipo.ATRASO);
+        multa.setStatus(Multa.Status.PENDENTE);
+        multa.setValor(diasAtraso * 2.0);
+
+        multaRepository.save(multa);
     }
 
     @Override
-    public List<Emprestimo> listarTodos() {
-        return emprestimoRepository.findAll();
+    public void deletar(Long id) {
+
+        Emprestimo emp = emprestimoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
+
+        boolean possuiMulta = multaRepository.existsByEmprestimoAlunoAndStatus(
+                emp.getAluno(),
+                Multa.Status.PENDENTE
+        );
+
+        if (possuiMulta) {
+            throw new RuntimeException("Não é possível excluir empréstimo com multas pendentes");
+        }
+
+        emprestimoRepository.deleteById(id);
     }
 }

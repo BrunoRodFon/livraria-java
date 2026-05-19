@@ -18,35 +18,57 @@ public class MultaController {
     @Autowired
     private EmprestimoRepository emprestimoRepository;
 
-    // 🔥 ADICIONAR GET (faltava isso)
-    // Sem isso você não consegue abrir a tela de multas
     @GetMapping("/multas")
     public String listarMultas(Model model) {
+
         model.addAttribute("multas", multaService.listarTodas());
-
-        // 🔥 NECESSÁRIO PARA O SELECT
         model.addAttribute("emprestimos", emprestimoRepository.findAll());
-
-        model.addAttribute("multa", new Multa()); // 🔥 evita erro no form
+        model.addAttribute("multa", new Multa());
 
         return "multas";
     }
 
     @PostMapping("/multas")
-    public String salvarMulta(Multa multa, @RequestParam Long emprestimoId, Model model) {
+    public String salvarMulta(Multa multa,
+                              @RequestParam Long emprestimoId,
+                              Model model) {
 
         try {
-            // 🔥 BUSCA O EMPRÉSTIMO REAL
             Emprestimo emp = emprestimoRepository.findById(emprestimoId)
                     .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
 
             multaService.salvar(multa, emp);
 
         } catch (RuntimeException e) {
-
-            // 🔥 TRATAMENTO DE ERRO (faltava isso)
             model.addAttribute("erro", e.getMessage());
-            return listarMultas(model); // recarrega a tela com erro
+            return listarMultas(model);
+        }
+
+        return "redirect:/multas";
+    }
+
+    @PostMapping("/multas/deletar/{id}")
+    public String deletar(@PathVariable Long id, Model model) {
+
+        try {
+            multaService.deletar(id);
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return listarMultas(model);
+        }
+
+        return "redirect:/multas";
+    }
+
+    // ✅ NOVO: FINALIZAR MULTA
+    @PostMapping("/multas/finalizar/{id}")
+    public String finalizar(@PathVariable Long id, Model model) {
+
+        try {
+            multaService.finalizar(id);
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            return listarMultas(model);
         }
 
         return "redirect:/multas";

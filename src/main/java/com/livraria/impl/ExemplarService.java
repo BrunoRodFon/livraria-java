@@ -1,6 +1,7 @@
 package com.livraria.impl;
 
 import com.livraria.model.LivroExemplar;
+import com.livraria.repository.EmprestimoRepository;
 import com.livraria.repository.LivroExemplarRepository;
 import com.livraria.repository.LivroRepository;
 import com.livraria.IExemplarService;
@@ -14,11 +15,14 @@ public class ExemplarService implements IExemplarService {
 
     private final LivroRepository livroRepo;
     private final LivroExemplarRepository exemplarRepo;
+    private final EmprestimoRepository emprestimoRepo;
 
-    // ✔ INJEÇÃO CORRETA (removi @Autowired duplicado)
-    public ExemplarService(LivroRepository livroRepo, LivroExemplarRepository exemplarRepo) {
+    public ExemplarService(LivroRepository livroRepo,
+                           LivroExemplarRepository exemplarRepo,
+                           EmprestimoRepository emprestimoRepo) {
         this.livroRepo = livroRepo;
         this.exemplarRepo = exemplarRepo;
+        this.emprestimoRepo = emprestimoRepo;
     }
 
     @Override
@@ -38,10 +42,9 @@ public class ExemplarService implements IExemplarService {
             return "exemplares/form";
         }
 
-        // 🔥 GARANTE STATUS INICIAL
         exemplar.setStatus(LivroExemplar.Status.DISPONIVEL);
-
         exemplarRepo.save(exemplar);
+
         return "redirect:/exemplares/lista";
     }
 
@@ -53,7 +56,21 @@ public class ExemplarService implements IExemplarService {
 
     @Override
     public List<LivroExemplar> listarTodosDisponiveis() {
-        // 🔥 CORRETO (já estava bom)
         return exemplarRepo.findByStatus(LivroExemplar.Status.DISPONIVEL);
+    }
+
+    // ⭐ DELETE COM REGRA DE NEGÓCIO
+    public void deletar(Long id) {
+
+        LivroExemplar ex = exemplarRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Exemplar não encontrado"));
+
+        long ativos = emprestimoRepo.countByLivroExemplarIdAndAtivoTrue(id);
+
+        if (ativos > 0) {
+            throw new RuntimeException("Exemplar possui empréstimos ativos");
+        }
+
+        exemplarRepo.delete(ex);
     }
 }

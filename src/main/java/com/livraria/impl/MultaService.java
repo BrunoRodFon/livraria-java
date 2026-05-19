@@ -1,9 +1,9 @@
 package com.livraria.impl;
 
+import com.livraria.IMultaService;
 import com.livraria.model.Emprestimo;
 import com.livraria.model.Multa;
 import com.livraria.repository.MultaRepository;
-import com.livraria.IMultaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,55 +15,66 @@ public class MultaService implements IMultaService {
     @Autowired
     private MultaRepository multaRepository;
 
-    // 📌 LISTAR
     @Override
     public List<Multa> listarTodas() {
         return multaRepository.findAll();
     }
 
-    // 📌 SALVAR MANUAL (se precisar no futuro)
     @Override
     public Multa salvar(Multa multa, Emprestimo emp) {
 
-        // 🔥 GARANTE RELACIONAMENTO CORRETO
         multa.setEmprestimo(emp);
 
-        // 🔥 VALIDAÇÃO BÁSICA
-        if (multa.getValor() <= 0) {
+        if (multa.getValor() == null || multa.getValor() <= 0) {
             throw new RuntimeException("Valor da multa deve ser maior que zero");
         }
 
         return multaRepository.save(multa);
     }
 
-    // 📌 GERAR MULTA AUTOMÁTICA (ATRASO)
+    @Override
     public void gerarMultaAtraso(Emprestimo emprestimo, long diasAtraso) {
 
-        // 🔥 VALIDAÇÃO 1: só gera se houver atraso
-        if (diasAtraso <= 0) {
-            return; // não faz nada
-        }
+        if (diasAtraso <= 0) return;
 
-        // 🔥 VALIDAÇÃO 2: evita multa duplicada
         boolean jaExiste = multaRepository
                 .existsByEmprestimoAndTipo(emprestimo, Multa.Tipo.ATRASO);
 
-        if (jaExiste) {
-            return; // já existe multa para esse empréstimo
-        }
+        if (jaExiste) return;
 
-        // 🔥 CRIA MULTA
         Multa multa = new Multa();
-
-        multa.setEmprestimo(emprestimo); // ✔ CORRETO
+        multa.setEmprestimo(emprestimo);
         multa.setTipo(Multa.Tipo.ATRASO);
         multa.setStatus(Multa.Status.PENDENTE);
+        multa.setValor(diasAtraso * 2.0);
 
-        // 💰 REGRA DE NEGÓCIO CENTRALIZADA
-        double valorPorDia = 2.0;
-        double valorTotal = diasAtraso * valorPorDia;
+        multaRepository.save(multa);
+    }
 
-        multa.setValor(valorTotal);
+    // ❌ EXCLUIR (somente pago)
+    public void deletar(Long id) {
+
+        Multa multa = multaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Multa não encontrada"));
+
+        if (multa.getStatus() == Multa.Status.PENDENTE) {
+            throw new RuntimeException("Não é possível excluir multa pendente");
+        }
+
+        multaRepository.deleteById(id);
+    }
+
+    // ✅ NOVO: FINALIZAR MULTA (PAGAR)
+    public void finalizar(Long id) {
+
+        Multa multa = multaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Multa não encontrada"));
+
+        if (multa.getStatus() == Multa.Status.PAGO) {
+            throw new RuntimeException("Multa já está paga");
+        }
+
+        multa.setStatus(Multa.Status.PAGO);
 
         multaRepository.save(multa);
     }
