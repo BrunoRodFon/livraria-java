@@ -1,110 +1,264 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Livraria - Início</title>
+    <meta charset="UTF-8">
+    <title>Sistema de Livraria</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
+    <link rel="stylesheet" href="/css/style.css">
 
-        .container {
-            width: 1000px; /* 🔥 ALTERADO: mais largura para melhor layout */
-            margin: 60px auto;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 40px;
-        }
-
-        .menu {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px; /* 🔥 ALTERADO: mais espaçamento */
-        }
-
-        .card {
-            padding: 40px; /* 🔥 ALTERADO: maior área clicável */
-            border-radius: 12px;
-            color: white;
-            text-decoration: none;
-            font-size: 20px; /* 🔥 ALTERADO */
-            font-weight: bold;
-            display: flex; /* 🔥 ALTERADO */
-            align-items: center; /* 🔥 ALTERADO */
-            justify-content: center; /* 🔥 ALTERADO */
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: scale(1.05); /* 🔥 ALTERADO */
-            opacity: 0.95;
-        }
-
-        /* CORES PADRÃO DO SISTEMA */
-        .alunos {
-            background-color: #007BFF;
-        }
-
-        .responsaveis {
-            background-color: #28a745;
-        }
-
-        .livros {
-            background-color: #8B4513;
-        }
-
-        .emprestimos {
-            background-color: #6f42c1; /* 🔥 NOVO: roxo padrão empréstimos */
-        }
-
-        .multas {
-            background-color: #ffc107; /* 🔥 ALTERADO: amarelo (melhor que cinza) */
-            color: #000; /* 🔥 ALTERADO: contraste */
-        }
-
-    </style>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
-<div class="container">
+<!-- BOTÃO MENU -->
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
 
-    <h1>📚 Sistema de Livraria</h1> <!-- 🔥 ALTERADO: título com emoji -->
+<div id="overlay" onclick="toggleMenu()"></div>
 
-    <div class="menu">
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
 
-        <!-- 🔥 PADRÃO CORRETO: card inteiro é clicável -->
-        <a href="/alunos" class="card alunos">
-            📚 Alunos
-        </a>
+    <img src="/images/logo.png" class="logo" alt="Logo">
 
-        <a href="/responsaveis" class="card responsaveis">
-            👨‍👩‍👧 Responsáveis
-        </a>
+    <a th:href="@{/}" class="menu-item">
+        🏠 <span class="menu-text">Início</span>
+    </a>
 
-        <a href="/exemplares/lista" class="card livros">
-            📖 Livros
-        </a>
+    <a href="/alunos" class="menu-item">
+        👨‍🎓 <span class="menu-text">Alunos</span>
+    </a>
 
-        <!-- 🔥 CORREÇÃO IMPORTANTE -->
-        <!-- Antes: <div> com <a> dentro ❌ -->
-        <!-- Agora: <a> direto como card ✔ -->
-        <a href="/emprestimos" class="card emprestimos">
-            📕 Empréstimos
-        </a>
+    <a href="/responsaveis" class="menu-item">
+        👨‍👩‍👧 <span class="menu-text">Responsáveis</span>
+    </a>
 
-        <!-- 🔥 CORREÇÃO IMPORTANTE -->
-        <a href="/multas" class="card multas">
-            💰 Multas
-        </a>
+    <a href="/livros/lista" class="menu-item">
+        📚 <span class="menu-text">Livros</span>
+    </a>
+
+    <a href="/exemplares/lista" class="menu-item">
+        📖 <span class="menu-text">Exemplares</span>
+    </a>
+
+    <a href="/emprestimos" class="menu-item">
+        📕 <span class="menu-text">Empréstimos</span>
+    </a>
+
+    <a href="/multas" class="menu-item">
+        💰 <span class="menu-text">Multas</span>
+    </a>
+
+</div>
+
+<!-- CONTEÚDO -->
+<div class="content">
+
+    <div class="content-inner">
+
+        <h1>📚 Sistema de Gestão da Livraria</h1>
+
+        <p>
+            Painel de controle com informações gerais da biblioteca.
+        </p>
+
+        <!-- CARDS -->
+        <div class="cards" style="display:flex; flex-direction:row; flex-wrap:nowrap; gap:25px; justify-content:center; margin-bottom:40px;">
+
+            <div class="card" style="flex:1; max-width:250px; background:white; border-radius:12px; padding:25px; text-align:center; border-top:5px solid #D4AF37; box-shadow:0 4px 15px rgba(11,31,77,0.12);">
+                <div>👨‍🎓</div>
+                <span>Total de Alunos</span>
+                <h2 th:text="${totalAlunos}">0</h2>
+            </div>
+
+            <div class="card" style="flex:1; max-width:250px; background:white; border-radius:12px; padding:25px; text-align:center; border-top:5px solid #D4AF37; box-shadow:0 4px 15px rgba(11,31,77,0.12);">
+                <div>📚</div>
+                <span>Total de Livros</span>
+                <h2 th:text="${totalLivros}">0</h2>
+            </div>
+
+            <div class="card" style="flex:1; max-width:250px; background:white; border-radius:12px; padding:25px; text-align:center; border-top:5px solid #D4AF37; box-shadow:0 4px 15px rgba(11,31,77,0.12);">
+                <div>👨‍👩‍👧</div>
+                <span>Responsáveis</span>
+                <h2 th:text="${totalResponsaveis}">0</h2>
+            </div>
+
+        </div>
+        <!-- GRÁFICOS -->
+        <div class="dashboard-charts">
+
+            <!-- Empréstimos por aluno -->
+            <div class="chart-box">
+                <h3>📊 Empréstimos por Aluno</h3>
+                <canvas id="graficoAlunos"></canvas>
+            </div>
+
+            <!-- Livros mais emprestados -->
+            <div class="chart-box">
+                <h3>📕 Livros Mais Emprestados</h3>
+                <canvas id="graficoLivros"></canvas>
+            </div>
+
+            <!-- Multas -->
+            <div class="chart-box">
+                <h3>💰 Multas por Aluno</h3>
+                <canvas id="graficoMultas"></canvas>
+            </div>
+
+        </div>
 
     </div>
 
 </div>
+
+<!-- MENU RESPONSIVO -->
+<script>
+
+    function toggleMenu() {
+
+        document.getElementById("sidebar")
+            .classList.toggle("active");
+
+        document.getElementById("overlay")
+            .classList.toggle("active");
+    }
+
+</script>
+
+<!-- GRÁFICOS -->
+<script th:inline="javascript">
+
+    /* ===========================
+       EMPRÉSTIMOS POR ALUNO
+    ============================ */
+
+    const alunosLabels = [[${alunosNomes}]];
+    const alunosData = [[${alunosEmprestimos}]];
+
+    new Chart(document.getElementById('graficoAlunos'), {
+
+        type: 'bar',
+
+        data: {
+
+            labels: alunosLabels,
+
+            datasets: [{
+                label: 'Empréstimos',
+                data: alunosData,
+                backgroundColor: '#8B4513'
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+    /* ===========================
+       LIVROS MAIS EMPRESTADOS
+    ============================ */
+
+    const livrosLabels = [[${livrosNomes}]];
+    const livrosData = [[${livrosEmprestimos}]];
+
+    new Chart(document.getElementById('graficoLivros'), {
+
+        type: 'bar',
+
+        data: {
+
+            labels: livrosLabels,
+
+            datasets: [{
+                label: 'Empréstimos',
+                data: livrosData,
+                backgroundColor: '#007bff'
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+    /* ===========================
+       MULTAS
+    ============================ */
+
+    const multasLabels = [[${alunosMultas}]];
+    const multasData = [[${valoresMultas}]];
+
+    new Chart(document.getElementById('graficoMultas'), {
+
+        type: 'pie',
+
+        data: {
+
+            labels: multasLabels,
+
+            datasets: [{
+                label: 'Multas',
+                data: multasData,
+
+                backgroundColor: [
+                    '#8B4513',
+                    '#007bff',
+                    '#28a745',
+                    '#ffc107',
+                    '#dc3545',
+                    '#6f42c1'
+                ]
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+</script>
 
 </body>
 </html>

@@ -1,65 +1,170 @@
+# 📚 Sistema de Gestão de Biblioteca Escolar
 
-# 📚 Sistema de Controle de Empréstimos - Livraria Escolar
+## 📌 Sobre o Projeto
 
-## 📌 Descrição
+Sistema web desenvolvido em Java utilizando Spring Boot para gerenciamento de bibliotecas escolares.
 
-Sistema desenvolvido em Java com Spring Boot para controle de empréstimos de uma biblioteca escolar de pequeno porte.
+O projeto permite controlar alunos, responsáveis, livros, exemplares, empréstimos e multas através de uma interface web moderna construída com Thymeleaf.
 
-Permite o gerenciamento de alunos, responsáveis, livros e exemplares, com possibilidade de expansão futura para empréstimos e multas.
-
-O sistema possui uma interface web amigável utilizando **Thymeleaf**, com navegação via menu inicial.
+Além do gerenciamento completo dos cadastros, o sistema possui um dashboard inicial com indicadores e gráficos estatísticos para acompanhamento das operações da biblioteca.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+# 🚀 Tecnologias Utilizadas
+
+### Backend
 
 * Java 17+
 * Spring Boot
+* Spring MVC
 * Spring Data JPA
+* Hibernate
+
+### Frontend
+
 * Thymeleaf
+* HTML5
+* CSS3
+* JavaScript
+* Chart.js
+
+### Banco de Dados
+
 * MySQL
+
+### Build
+
 * Maven
 
 ---
 
-## ⚙️ Pré-requisitos
+# 📋 Funcionalidades
 
-Antes de rodar o projeto, você precisa ter instalado:
+## 👨‍🎓 Alunos
 
-* JDK 17 ou superior
+* Cadastro de alunos
+* Edição de alunos
+* Exclusão de alunos
+* Consulta de alunos cadastrados
+* Validação de RA único
+
+---
+
+## 👨‍👩‍👧 Responsáveis
+
+* Cadastro de responsáveis
+* Edição de responsáveis
+* Exclusão de responsáveis
+* Consulta de responsáveis cadastrados
+* Validação de CPF único
+
+---
+
+## 📚 Livros
+
+* Cadastro de livros
+* Edição de livros
+* Exclusão de livros
+* Consulta de livros cadastrados
+
+---
+
+## 📖 Exemplares
+
+* Cadastro de exemplares
+* Associação com livros
+* Controle de disponibilidade
+* Consulta de exemplares
+
+---
+
+## 📕 Empréstimos
+
+* Registro de empréstimos
+* Associação entre aluno e exemplar
+* Controle de empréstimos ativos
+* Histórico de empréstimos
+
+---
+
+## 💰 Multas
+
+* Cadastro de multas
+* Associação com empréstimos
+* Controle de multas pendentes
+* Consulta de multas registradas
+
+---
+
+## 📊 Dashboard
+
+Painel inicial com informações consolidadas do sistema:
+
+* Total de alunos
+* Total de responsáveis
+* Total de livros
+* Total de empréstimos
+* Total de multas
+
+### Gráficos
+
+* Empréstimos por aluno
+* Livros mais emprestados
+* Multas por aluno
+
+---
+
+# 🗄️ Estrutura do Banco de Dados
+
+Principais entidades:
+
+* Aluno
+* Responsável
+* Livro
+* Exemplar
+* Empréstimo
+* Multa
+
+Relacionamentos:
+
+* Um responsável pode estar associado a vários alunos
+* Um livro possui vários exemplares
+* Um aluno pode possuir vários empréstimos
+* Um empréstimo pode gerar multas
+
+---
+
+# ⚙️ Pré-requisitos
+
+Antes de executar o projeto, instale:
+
+* Java JDK 17 ou superior
 * Maven
 * MySQL Server
-* IDE (recomendado: IntelliJ ou VS Code)
+* IntelliJ IDEA ou VS Code
 
 ---
 
-## 🗄️ Configuração do Banco de Dados
+# 🔐 Configuração do Banco
 
-1. Acesse o MySQL
-2. Crie o banco de dados:
+Crie o banco de dados:
 
 ```sql
 CREATE DATABASE livraria;
-````
-
-3. Execute o script de criação das tabelas (fornecido no projeto)
-
----
-
-## 🔐 Configuração da Aplicação
-
-No arquivo:
-
 ```
+
+Configure o arquivo:
+
+```properties
 src/main/resources/application.properties
 ```
 
-Configure suas credenciais do banco:
+Exemplo:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:SUA_PORTA/livraria
-spring.datasource.username=SEU_USUARIO
-spring.datasource.password=SUA_SENHA
+spring.datasource.url=jdbc:mysql://localhost:3306/livraria
+spring.datasource.username=root
+spring.datasource.password=senha
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
@@ -68,99 +173,88 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 
 ---
 
-## ▶️ Como Executar o Projeto
+# ▶️ Executando o Projeto
 
-### Opção 1 — Pela IDE
+## Pela IDE
 
-1. Abra o projeto
-2. Localize a classe:
+Execute a classe:
 
-```
+```java
 LivrariaApplication.java
 ```
 
-3. Execute (Run)
-
 ---
 
-### Opção 2 — Pelo terminal
-
-Na raiz do projeto:
+## Pelo Terminal
 
 ```bash
+mvn clean install
 mvn spring-boot:run
 ```
 
 ---
 
-## 🌐 Acesso ao Sistema
+# 🌐 Acesso
 
-Após iniciar, acesse no navegador:
+Após iniciar a aplicação:
 
-```
+```text
 http://localhost:8080
 ```
 
-### Menu Principal
+---
 
-O menu inicial possui cards para acesso rápido às funcionalidades:
+# 🖥️ Interface do Sistema
 
-* 📚 **Alunos** → Cadastro e listagem de alunos
-* 👨‍👩‍👧 **Responsáveis** → Cadastro e listagem de responsáveis
-* 📖 **Livros / Exemplares** → Cadastro e listagem de exemplares (livros e exemplares habilitados com cor marrom)
-* 💰 **Multas** → Futuro módulo (desabilitado no momento)
+O sistema possui:
+
+* Menu lateral de navegação
+* Dashboard com indicadores
+* Gráficos estatísticos
+* Formulários de cadastro
+* Tabelas de consulta
+* Layout responsivo
 
 ---
 
-## ✅ Funcionalidades Atuais
+# 📂 Estrutura do Projeto
 
-* Cadastro de alunos
-* Cadastro de responsáveis
-* Associação entre aluno e responsável
-* Cadastro de exemplares de livros
-* Validação de RA único
-* Validação de CPF único
-* Exibição de erros na interface
-* Navegação entre telas com botão "Voltar" e links rápidos
-* Menu principal com cards coloridos para facilitar acesso às seções
-
----
-
-## 🔄 Funcionalidades Futuras
-
-* Cadastro detalhado de livros
-* Empréstimos
-* Controle de atrasos
-* Multas automáticas
-* Relatórios analíticos
-
----
-
-## 📌 Observações
-
-* O projeto roda localmente (localhost)
-* Não possui autenticação (escopo acadêmico)
-* Estrutura simples com foco em aprendizado
-* Interface responsiva com destaque visual para cada módulo
-
----
-
-## 💡 Dica
-
-Sempre execute:
-
-```bash
-mvn clean install
+```text
+src
+├── main
+│   ├── java
+│   │   ├── controller
+│   │   ├── entity
+│   │   ├── repository
+│   │   ├── service
+│   │   └── LivrariaApplication
+│   │
+│   └── resources
+│       ├── static
+│       │   ├── css
+│       │   ├── js
+│       │   └── images
+│       │
+│       └── templates
+│
+└── pom.xml
 ```
 
-antes de rodar o projeto, para garantir que todas as dependências estão corretas.
+---
 
+# 🎯 Objetivo
 
+Este projeto foi desenvolvido com foco acadêmico para aplicação dos conceitos de:
 
-✅ **Principais atualizações adicionadas:**
-- Inclusão de **Livros / Exemplares** habilitados no menu principal (cor marrom).  
-- Menção aos **botões de voltar** nas telas de cadastro de alunos, responsáveis e exemplares.  
-- Atualização das funcionalidades atuais para refletir o **cadastro de exemplares**.  
-- Explicação visual do **menu com cards coloridos**.
+* Programação Orientada a Objetos
+* Desenvolvimento Web com Spring Boot
+* Persistência de Dados com JPA
+* Integração Frontend e Backend
+* Modelagem Relacional
+* Arquitetura MVC
 
+---
 
+# 👨‍💻 Autor
+
+Projeto desenvolvido por Bruno Rodrigues, Beatriz Moscareli, Henrique de Souza, Jo Martins e Rodrigo Àllvez para fins acadêmicos e de aprendizado em desenvolvimento Java Web.
